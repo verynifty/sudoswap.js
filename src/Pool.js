@@ -2,6 +2,7 @@ const ABI = require('./ABIS/pool.json')
 const NFTABI = require('./ABIS/erc721.json')
 
 const { ethers } = require("ethers");
+const abiDecoder = require('abi-decoder');
 
 function Pool (sudo, address) {
     this.sudo = sudo;
@@ -63,8 +64,14 @@ Pool.prototype.getBuyNFTQuote = async function (nbNFT) {
 Pool.prototype.getBuys = async function () {
     let infilter = this.contract.filters.SwapNFTInPair();
     let inevents = await this.contract.queryFilter(infilter);
-    let tfilter = []
-    console.log(events)
+    let nft = await this.getNFTContract()
+    let outtransfersfilter = nft.filters.Transfer(this.address, null);
+    let outtransfers = await nft.queryFilter(outtransfersfilter);
+    for (const t of outtransfers) {
+        let tx = await t.getTransaction()
+        console.log(tx)
+    }
+    //console.log(outtransfers)
 }
 
 module.exports = Pool;
