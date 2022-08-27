@@ -4,7 +4,11 @@ const { ethers } = require("ethers");
 function Pool (sudo, address) {
     this.sudo = sudo;
     this.contract = new ethers.Contract(address, ABI, sudo.provider);
+}
 
+Pool.prototype.getType() = async function() {
+    let type = await this.contract.poolType();
+    console.log(type)
 }
 
 Pool.prototype.getSellNFTQuote = async function (nbNFT) {
