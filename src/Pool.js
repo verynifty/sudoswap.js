@@ -33,6 +33,11 @@ Pool.prototype.getNFT = async function() {
     return this.nft;
 }
 
+Pool.prototype.getSpotPrice = async function() {
+    let spotPrice = await this.contract.spotPrice();
+    return spotPrice;
+}
+
 Pool.prototype.getNFTContract = async function() {
     if (this.nftContract != null) {
         await this.getNFT()
@@ -62,6 +67,8 @@ Pool.prototype.getBuyNFTQuote = async function (nbNFT) {
 }
 
 Pool.prototype.getBuys = async function () {
+    let trades = [];
+
     let infilter = this.contract.filters.SwapNFTInPair();
     let inevents = await this.contract.queryFilter(infilter);
 
@@ -69,15 +76,23 @@ Pool.prototype.getBuys = async function () {
     let spotPrices = await this.contract.queryFilter(spotfilter);
 
     let nft = await this.getNFTContract()
-    let outtransfersfilter = nft.filters.Transfer(this.address, null);
-    let outtransfers = await nft.queryFilter(outtransfersfilter);
+    let intransfersfilter = nft.filters.Transfer(null, this.address);
+    let intransfers = await nft.queryFilter(intransfersfilter);
 
     let spotIndex = 0;
-    let spotIndexBlockNumber = spotPrices.length > 0 ? spotPrices[0].ret.newSpotPrice : 0;
-    for (const t of outtransfers) {
-        let tx = await t.getTransaction()
+    let spotIndexBlockNumber = spotPrices.length > (await this.getSpotPrice()) ? spotPrices[0].args.newSpotPrice : 0;
+    for (const i of inevents) {
+        //let tx = await i.getTransaction();
+        let nfts = intransfers.filter(function(t) {
+            // console.log(t.transactionHash, tx.transactionHash)
+            return (t.transactionHash == i.transactionHash && t.logIndex < i.logIndex)
+        }).map(function(t) {
+            return (t.args.tokenId)
+        });
+        
+        console.log("======== TX")
+        console.log(nfts)
 
-        console.log(tx)
     }
     //console.log(outtransfers)
 }
