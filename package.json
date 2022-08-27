@@ -1,0 +1,29 @@
+{
+  "name": "sudoswapjs",
+  "version": "1.0.0",
+  "description": "A small js unofficial librarby to work with sudoswap AMM",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/verynifty/sudoswapjs.git"
+  },
+  "keywords": [
+    "sudoswap",
+    "js",
+    "ethereum",
+    "library",
+    "amm"
+  ],
+  "author": "Muse DAO",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/verynifty/sudoswapjs/issues"
+  },
+  "homepage": "https://github.com/verynifty/sudoswapjs#readme",
+  "dependencies": {
+    "ethers": "^5.7.0"
+  }
+}
