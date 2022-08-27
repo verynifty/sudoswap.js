@@ -6,9 +6,19 @@ function Pool (sudo, address) {
     this.contract = new ethers.Contract(address, ABI, sudo.provider);
 }
 
-Pool.prototype.getType() = async function() {
+Pool.prototype.getType = async function() {
+    if (this.type != null) {
+        return this.type
+    }
     let type = await this.contract.poolType();
-    console.log(type)
+    if (type == 2) {
+        this.type = "TRADE";
+    } else if (type == 1) {
+        this.type = "SELL";
+    } else if (type == 0) {
+        this.type = "BUY";
+    }
+    return this.type
 }
 
 Pool.prototype.getSellNFTQuote = async function (nbNFT) {
