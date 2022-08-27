@@ -64,11 +64,19 @@ Pool.prototype.getBuyNFTQuote = async function (nbNFT) {
 Pool.prototype.getBuys = async function () {
     let infilter = this.contract.filters.SwapNFTInPair();
     let inevents = await this.contract.queryFilter(infilter);
+
+    let spotfilter = this.contract.filters.SpotPriceUpdate();
+    let spotPrices = await this.contract.queryFilter(spotfilter);
+
     let nft = await this.getNFTContract()
     let outtransfersfilter = nft.filters.Transfer(this.address, null);
     let outtransfers = await nft.queryFilter(outtransfersfilter);
+
+    let spotIndex = 0;
+    let spotIndexBlockNumber = spotPrices.length > 0 ? spotPrices[0].ret.newSpotPrice : 0;
     for (const t of outtransfers) {
         let tx = await t.getTransaction()
+
         console.log(tx)
     }
     //console.log(outtransfers)
