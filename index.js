@@ -8,7 +8,10 @@ const SudoSwap = require('./src/SudoSwap.js');
 
         let nft = await pool.getNFT()
         console.log(nft)
-        
+
+        let spotPrice = await pool.getSpotPrice()
+        console.log(spotPrice)
+
         let trades = await pool.getBuys();
         console.log(trades);
 
