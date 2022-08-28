@@ -82,8 +82,11 @@ Pool.prototype.getBuys = async function () {
     let spotIndex = 0;
     let spotPrice= spotPrices.length > (await this.getSpotPrice()) ? spotPrices[0].args.newSpotPrice : 0;
     for (const i of inevents) {
-        let tx = await i.getTransactionReceipt();
+        let tx = await this.sudo.getTransaction(i.transactionHash);
+        let b = await this.sudo.getBlock(i.blockNumber);
+        let buyer = "";
         let nfts = intransfers.filter(function(t) {
+            buyer = t.args.to;
             return (t.transactionHash == i.transactionHash && t.logIndex < i.logIndex)
         }).map(function(t) {
             return (t.args.tokenId)
@@ -92,18 +95,19 @@ Pool.prototype.getBuys = async function () {
         console.log("======== TX")
         //console.log(tx)
 
-        let b = await this.sudo.getBlock(i.blockNumber);
         console.log(b)
 
         trades.push({
             transactionHash: i.transactionHash,
             blockNumber: i.blockNumber,
             nfts: nfts,
-            //buyer: ,
-            price: spotPrice
+            buyer: buyer,
+            price: spotPrice,
+            timestamp: b.timestamp
         })
 
     }
+    return trades;
     //console.log(outtransfers)
 }
 
