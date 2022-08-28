@@ -66,7 +66,7 @@ Pool.prototype.getBuyNFTQuote = async function (nbNFT) {
     }
 }
 
-Pool.prototype.getSells = async function () {
+Pool.prototype.getTradesIn = async function () {
     let trades = [];
 
     let infilter = this.contract.filters.SwapNFTInPair();
@@ -79,8 +79,6 @@ Pool.prototype.getSells = async function () {
     let intransfersfilter = nft.filters.Transfer(null, this.address);
     let intransfers = await nft.queryFilter(intransfersfilter);
 
-    let spotIndex = 0;
-    let spotPrice= spotPrices.length > (await this.getSpotPrice()) ? spotPrices[0].args.newSpotPrice : 0;
     for (const i of inevents) {
 
         // We get the spot price before the swapIn event
@@ -96,7 +94,7 @@ Pool.prototype.getSells = async function () {
         //console.log("price after == ", spotPriceAfter)
         spotPriceAfter = spotPriceAfter.length > 0 ? spotPriceAfter[0].args.newSpotPrice: (await this.getSpotPrice())
 
-        let tx = await this.sudo.getTransaction(i.transactionHash);
+        // let tx = await this.sudo.getTransaction(i.transactionHash);
         let b = await this.sudo.getBlock(i.blockNumber);
         let buyer = "";
         let nfts = intransfers.filter(function(t) {
@@ -107,16 +105,70 @@ Pool.prototype.getSells = async function () {
         });
         
         console.log("======== TX")
-        //console.log(tx)
-
-        //console.log(b)
-
         let t = {
-            type: "SELL_NFT",
+            type: "NFT_IN_POOL",
             transactionHash: i.transactionHash,
             blockNumber: i.blockNumber,
             //nfts: nfts,
             nbNfts: nft.length,
+            buyer: buyer,
+            priceBefore: spotPriceBefore.toString(),
+            priceAfter: spotPriceAfter.toString(),
+            timestamp: b.timestamp,
+            pool: this.address
+        }
+        console.log(t)
+        trades.push(t)
+    }
+    return trades;
+    //console.log(outtransfers)
+}
+
+Pool.prototype.getTradesIn = async function () {
+    let trades = [];
+
+    let outfilter = this.contract.filters.SwapNFTOutPair();
+    let outevents = await this.contract.queryFilter(outfilter);
+
+    let spotfilter = this.contract.filters.SpotPriceUpdate();
+    let spotPrices = await this.contract.queryFilter(spotfilter);
+
+    let nft = await this.getNFTContract()
+    let intransfersfilter = nft.filters.Transfer(this.address, null);
+    let intransfers = await nft.queryFilter(intransfersfilter);
+
+    for (const i of outevents) {
+
+        // We get the spot price before the swapIn event
+        let spotPriceBefore = spotPrices.filter(function(p) {
+            return (p.blockNumber <= i.blockNumber && p.logIndex < i.logIndex && p.transactionHash != i.transactionHash);
+        })
+        spotPriceBefore = spotPriceBefore.length > 0 ? spotPriceBefore[spotPriceBefore.length - 1].args.newSpotPrice : (await this.getSpotPrice());
+        
+        // we get the spot Price after the swapIn event
+        let spotPriceAfter = spotPrices.filter(function(p) {
+            return (p.transactionHash == i.transactionHash && p.logIndex < i.logIndex || (  p.blockNumber >= i.blockNumber));
+        })
+        //console.log("price after == ", spotPriceAfter)
+        spotPriceAfter = spotPriceAfter.length > 0 ? spotPriceAfter[0].args.newSpotPrice: (await this.getSpotPrice())
+
+        // let tx = await this.sudo.getTransaction(i.transactionHash);
+        let b = await this.sudo.getBlock(i.blockNumber);
+        let buyer = "";
+        let nfts = intransfers.filter(function(t) {
+            buyer = t.args.to;
+            return (t.transactionHash == i.transactionHash && t.logIndex < i.logIndex)
+        }).map(function(t) {
+            return (t.args.tokenId)
+        });
+        
+        console.log("======== TX")
+        let t = {
+            type: "NFT_OUT_POOL",
+            transactionHash: i.transactionHash,
+            blockNumber: i.blockNumber,
+            //nfts: nfts,
+            nbNfts: nfts.length,
             buyer: buyer,
             priceBefore: spotPriceBefore.toString(),
             priceAfter: spotPriceAfter.toString(),

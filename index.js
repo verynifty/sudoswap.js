@@ -12,7 +12,7 @@ const SudoSwap = require('./src/SudoSwap.js');
         let spotPrice = await pool.getSpotPrice()
         console.log(spotPrice)
 
-        let trades = await pool.getBuys();
+        let trades = await pool.getTradesIn();
         console.log(trades);
 
         let type = await pool.getType()
