@@ -4,7 +4,7 @@ const SudoSwap = require('./src/SudoSwap.js');
     try {
 
         const sudo = new SudoSwap("https://eth-mainnet.g.alchemy.com/v2/_vDB38mJZ39GyrIYbhoFtEkxYVydis-o")
-        const pool = sudo.getPool("0xce50f629ab7e957b7fadc2d307156e788b6c3bb9")
+        const pool = sudo.getPool("0x6210e6229aec95d17f57dab93e042013d7d3603c")
 
         let nft = await pool.getNFT()
         console.log(nft)
