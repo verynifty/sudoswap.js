@@ -12,7 +12,7 @@ function Pool (sudo, address) {
 
 Pool.prototype.getType = async function() {
     if (this.type != null) {
-        return this.type
+        return (this.type);
     }
     let type = await this.contract.poolType();
     if (type == 2) {
@@ -22,20 +22,32 @@ Pool.prototype.getType = async function() {
     } else if (type == 0) {
         this.type = "BUY";
     }
-    return this.type
+    return (this.type);
 }
 
 Pool.prototype.getNFT = async function() {
     if (this.nft != null) {
-        return this.nft
+        return this.nft;
     }
     this.nft = await this.contract.nft();
-    return this.nft;
+    return (this.nft);
 }
 
 Pool.prototype.getSpotPrice = async function() {
     let spotPrice = await this.contract.spotPrice();
-    return spotPrice;
+    return (spotPrice);
+}
+
+Pool.prototype.getFee = async function() {
+    return (await this.contract.fee());
+}
+
+Pool.prototype.getDelta = async function() {
+    return (await this.contract.delta());
+}
+
+Pool.prototype.getAssetRecipient = async function() {
+    return (await this.contract.assetRecipient());
 }
 
 Pool.prototype.getNFTContract = async function() {
@@ -43,7 +55,7 @@ Pool.prototype.getNFTContract = async function() {
         await this.getNFT()
     }
     this.nftContract = new ethers.Contract(this.nft, NFTABI, this.sudo.provider);
-    return this.nftContract;
+    return (this.nftContract);
 }
 
 Pool.prototype.getSellNFTQuote = async function (nbNFT) {
