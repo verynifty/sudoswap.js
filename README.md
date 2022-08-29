@@ -47,7 +47,7 @@ pool.getNFT() // Address of the NFT
 pool.getDelta()
 pool.getSpotPrice()
 pool.getFee()
-pool.owner() // return owner of pool
+pool.getOwner() // return owner of pool
 pool.getAssetRecipient()
 pool.getAllHeldIds() // return all nft ids in the pool
 pool.getNFTContract() // return an ethers.js instance of the ERC721 contract
