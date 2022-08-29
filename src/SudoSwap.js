@@ -2,6 +2,7 @@ const { ethers } = require("ethers");
 const moize = require("moize");
 
 const Pool = require("./Pool");
+const Router = require("./Router");
 
 const BLOCK_CACHE_SIZE = 300;
 const TRANSACTION_CACHE_SIZE = 100;
@@ -37,6 +38,13 @@ function Sudoswap(web3Provider) {
 */
 Sudoswap.prototype.getPool = function (address) {
   return new Pool(this, address);
+};
+
+// Instantiate the router
+Sudoswap.prototype.router = async function () {
+  const chainId = (await this.provider.getNetwork()).chainId;
+
+  return new Router(this, chainId);
 };
 
 Sudoswap.prototype.formatDelta = function (val, type) {

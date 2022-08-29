@@ -21,10 +21,12 @@ An unofficial library to make it easier to work with SudoSwap in JS.
 
 ```javascript
 
-const SudoSwap = require("@musedao/sudoswap.js");
+const sudoswap = require("@musedao/sudoswap.js");
 
-const sudo = new SudoSwap(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY}`); //pass rpc
+const sudo = new sudoswap(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY}`); //pass rpc
 const pool = sudo.getPool("0x6210e6229aec95d17f57dab93e042013d7d3603c"); //any sudo pool
+const router = sudo.router(); //use the router
+
 ```
 
 ## Sudo
@@ -45,6 +47,7 @@ pool.getNFT() // Address of the NFT
 pool.getDelta()
 pool.getSpotPrice()
 pool.getFee()
+pool.owner() // return owner of pool
 pool.getAssetRecipient()
 pool.getAllHeldIds() // return all nft ids in the pool
 pool.getNFTContract() // return an ethers.js instance of the ERC721 contract
@@ -88,6 +91,8 @@ Retturns an array containing all past trades from the pool:
   },...
 ]
 ```
+
+## Router
 
 
 

@@ -33,6 +33,14 @@ Pool.prototype.getNFT = async function () {
   return this.nft;
 };
 
+Pool.prototype.getOwner = async function () {
+  if (this.owner != null) {
+    return this.owner;
+  }
+  this.owner = await this.contract.owner();
+  return this.owner;
+};
+
 Pool.prototype.getAllHeldIds = async function () {
   let heldIds = await this.contract.getAllHeldIds();
 

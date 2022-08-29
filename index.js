@@ -25,6 +25,9 @@ const sudoswap = require("./src/Sudoswap.js");
     let sellQuote = await pool.getSellNFTQuote(1);
     console.log(sellQuote);
 
+    let owner = await pool.getOwner();
+    console.log("owner ", owner);
+
     let heldIds = await pool.getAllHeldIds();
     console.log(heldIds);
 
@@ -33,6 +36,10 @@ const sudoswap = require("./src/Sudoswap.js");
 
     let formatFee = sudo.formatFee("0.05", "exponential");
     console.log(formatFee);
+
+    // use router
+    const router = await sudo.router();
+    // console.log(router.contract);
   } catch (e) {
     console.log(e);
   }
