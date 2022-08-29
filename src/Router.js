@@ -16,4 +16,47 @@ function Router(sudo, chainId) {
   this.contract = new ethers.Contract(this.address, ABI, this.sudo.provider);
 }
 
+// todo add logic for connecting to signer
+Router.prototype.swapETHForAnyNFTs = async function (
+  swapList,
+  ethRecipient,
+  nftRecipient,
+  deadline
+) {
+  const tx = await this.contract.swapETHForAnyNFTs(
+    swapList,
+    ethRecipient,
+    nftRecipient,
+    deadline
+  );
+};
+
+Router.prototype.swapETHForSpecificNFTs = async function (
+  swapList,
+  ethRecipient,
+  nftRecipient,
+  deadline
+) {
+  const tx = await this.contract.swapETHForSpecificNFTs(
+    swapList,
+    ethRecipient,
+    nftRecipient,
+    deadline
+  );
+};
+
+Router.prototype.swapNFTsForToken = async function (
+  swapList,
+  minOutput,
+  tokenRecipient,
+  deadline
+) {
+  const tx = await this.contract.swapNFTsForToken(
+    swapList,
+    minOutput,
+    tokenRecipient,
+    deadline
+  );
+};
+
 module.exports = Router;
