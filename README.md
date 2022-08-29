@@ -1,5 +1,5 @@
 # sudoswap.js
-An unofficial library to make it easier to work with SudoSwap in JS.
+An unofficial library to make it easier to work with sudoswap in JS.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
