@@ -1,11 +1,25 @@
+require("dotenv").config();
+
 const sudoswap = require("./src/Sudoswap.js");
+
+const POOLS = {
+  1: "0x6210e6229aec95d17f57dab93e042013d7d3603c", // random mainnet pool
+  4: "0x349dC7d50747304155F4eCA46eD1F602AAa01a14", // random rinkeby pool
+};
 
 (async () => {
   try {
     const sudo = new sudoswap(
-      "https://eth-mainnet.g.alchemy.com/v2/_vDB38mJZ39GyrIYbhoFtEkxYVydis-o"
+      `https://eth-rinkeby.g.alchemy.com/v2/${process.env.ALCHEMY}`,
+      process.env.PRIVATE_KEY //optional: if you plan to execute trades.
     );
-    const pool = sudo.getPool("0x6210e6229aec95d17f57dab93e042013d7d3603c");
+    const chainId = (await sudo.provider.getNetwork()).chainId;
+
+    // =============================================================
+    //                   GET POOL DATA
+    // =============================================================
+
+    const pool = sudo.getPool(POOLS[chainId]); //initiate random pool based on chain id
 
     let nft = await pool.getNFT();
     console.log(nft);
@@ -28,8 +42,9 @@ const sudoswap = require("./src/Sudoswap.js");
     let owner = await pool.getOwner();
     console.log("owner ", owner);
 
-    let heldIds = await pool.getAllHeldIds();
-    console.log(heldIds);
+    // =============================================================
+    //                   TEST HELPERS
+    // =============================================================
 
     let formatDelta = sudo.formatDelta("0.05", "exponential");
     console.log(formatDelta);
@@ -37,9 +52,37 @@ const sudoswap = require("./src/Sudoswap.js");
     let formatFee = sudo.formatFee("0.05", "exponential");
     console.log(formatFee);
 
-    // use router
+    // =============================================================
+    //                   BUY WITH THE ROUTER
+    // =============================================================
+
+    const myWallet = sudo.signer.address;
+
+    const date = new Date();
+    const dateTimeInSeconds = Math.floor(date.getTime() / 1000);
+    const deadline = dateTimeInSeconds + 300; // 5 mins later
+
+    const swapList = [
+      { pair: "0x349dC7d50747304155F4eCA46eD1F602AAa01a14", numItems: 1 }, //random rinkeby nft
+    ];
+
+    const poolToTrade = sudo.getPool(
+      "0x349dC7d50747304155F4eCA46eD1F602AAa01a14"
+    );
+
+    const { inputAmount } = await poolToTrade.getBuyNFTQuote(1);
+
     const router = await sudo.router();
-    // console.log(router.contract);
+
+    const buyTx = await router.swapETHForAnyNFTs(
+      swapList,
+      myWallet, //eth recipient
+      myWallet, //nft recipient
+      deadline,
+      inputAmount.toString() //eth amount
+    );
+
+    console.log("bought 1 nft ", buyTx);
   } catch (e) {
     console.log(e);
   }

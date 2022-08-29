@@ -7,9 +7,15 @@ const Router = require("./Router");
 const BLOCK_CACHE_SIZE = 300;
 const TRANSACTION_CACHE_SIZE = 100;
 
-function Sudoswap(web3Provider) {
+function Sudoswap(web3Provider, pKey = null) {
   if (typeof web3Provider == "string") {
     this.provider = new ethers.providers.JsonRpcProvider(web3Provider);
+  }
+
+  // pass pkey for buy and sell functionality
+  if (pKey) {
+    const wallet = new ethers.Wallet(pKey);
+    this.signer = wallet.connect(this.provider);
   }
 
   const getBlock = async function (blockNumber) {

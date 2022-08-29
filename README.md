@@ -23,7 +23,8 @@ An unofficial library to make it easier to work with SudoSwap in JS.
 
 const sudoswap = require("@musedao/sudoswap.js");
 
-const sudo = new sudoswap(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY}`); //pass rpc
+const sudo = new sudoswap(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY}`, process.env.PRIVATE_KEY); //RPC and optional private key if used for trades
+
 const pool = sudo.getPool("0x6210e6229aec95d17f57dab93e042013d7d3603c"); //any sudo pool
 const router = sudo.router(); //use the router
 
@@ -94,6 +95,39 @@ Retturns an array containing all past trades from the pool:
 
 ## Router
 
+To execute trades via the router you need to pass a private key when intializing sudoswap js.
+
+```javascript
+
+const router = await sudo.router();
+
+//buy any nfts from pools
+const tx await router.swapETHForAnyNFTs(
+  swapList,
+  ethRecipient,
+  nftRecipient,
+  deadline,
+  ethAmount
+) 
+
+//buy specific nft ids from pool
+const tx = await router.swapETHForSpecificNFTs(
+  swapList,
+  ethRecipient,
+  nftRecipient,
+  deadline,
+  ethAmount
+)
+
+// Sell nfts
+const tx = await router.swapNFTsForToken(
+  swapList,
+  minOutput,
+  tokenRecipient,
+  deadline
+)
+
+```
 
 
 
