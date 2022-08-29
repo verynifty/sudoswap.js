@@ -26,8 +26,10 @@ const SudoSwap = require("./src/SudoSwap.js");
     console.log(sellQuote);
 
     let heldIds = await pool.getAllHeldIds();
-
     console.log(heldIds);
+
+    let formatDelta = sudo.formatDelta("0.5", "exponential");
+    console.log(formatDelta);
   } catch (e) {
     console.log(e);
   }
