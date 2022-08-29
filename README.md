@@ -10,6 +10,7 @@ An unofficial library to make it easier to work with SudoSwap in JS.
 
 - Wrap contract calls to make it easier to interact with pools/router from JS.
 - Parse historical trade events of pools.
+- Helpers to format sudo related data such as delta and fee.
 
 
 # Documentation

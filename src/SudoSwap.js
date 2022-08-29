@@ -6,7 +6,7 @@ const Pool = require("./Pool");
 const BLOCK_CACHE_SIZE = 300;
 const TRANSACTION_CACHE_SIZE = 100;
 
-function SudoSwap(web3Provider) {
+function Sudoswap(web3Provider) {
   if (typeof web3Provider == "string") {
     this.provider = new ethers.providers.JsonRpcProvider(web3Provider);
   }
@@ -35,11 +35,11 @@ function SudoSwap(web3Provider) {
 /*
     Instanciate a new pool
 */
-SudoSwap.prototype.getPool = function (address) {
+Sudoswap.prototype.getPool = function (address) {
   return new Pool(this, address);
 };
 
-SudoSwap.prototype.formatDelta = function (val, type) {
+Sudoswap.prototype.formatDelta = function (val, type) {
   if (type == "linear") {
     return ethers.utils.parseUnits(val, "ether").toString();
   } else {
@@ -48,9 +48,9 @@ SudoSwap.prototype.formatDelta = function (val, type) {
   }
 };
 
-SudoSwap.prototype.formatFee = function (val) {
+Sudoswap.prototype.formatFee = function (val) {
   //example val 0.05 = 5%
   return ethers.utils.parseUnits(val, "ether").toString();
 };
 
-module.exports = SudoSwap;
+module.exports = Sudoswap;

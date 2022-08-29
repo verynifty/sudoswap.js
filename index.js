@@ -1,8 +1,8 @@
-const SudoSwap = require("./src/SudoSwap.js");
+const sudoswap = require("./src/Sudoswap.js");
 
 (async () => {
   try {
-    const sudo = new SudoSwap(
+    const sudo = new sudoswap(
       "https://eth-mainnet.g.alchemy.com/v2/_vDB38mJZ39GyrIYbhoFtEkxYVydis-o"
     );
     const pool = sudo.getPool("0x6210e6229aec95d17f57dab93e042013d7d3603c");
