@@ -28,8 +28,11 @@ const SudoSwap = require("./src/SudoSwap.js");
     let heldIds = await pool.getAllHeldIds();
     console.log(heldIds);
 
-    let formatDelta = sudo.formatDelta("0.5", "exponential");
+    let formatDelta = sudo.formatDelta("0.05", "exponential");
     console.log(formatDelta);
+
+    let formatFee = sudo.formatFee("0.05", "exponential");
+    console.log(formatFee);
   } catch (e) {
     console.log(e);
   }

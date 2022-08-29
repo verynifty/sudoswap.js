@@ -43,8 +43,14 @@ SudoSwap.prototype.formatDelta = function (val, type) {
   if (type == "linear") {
     return ethers.utils.parseUnits(val, "ether").toString();
   } else {
+    // example val 0.05 = 5%
     return 1e18 + val * 1e17;
   }
+};
+
+SudoSwap.prototype.formatFee = function (val) {
+  //example val 0.05 = 5%
+  return ethers.utils.parseUnits(val, "ether").toString();
 };
 
 module.exports = SudoSwap;
