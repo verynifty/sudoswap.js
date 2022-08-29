@@ -12,33 +12,53 @@ An unofficial library to make it easier to work with SudoSwap in JS.
 - Parse historical trade events of pools.
 
 
-## Documentation
+# Documentation
+
+## Installation
+
+`npm install @musedao/sudoswap.js`
+
+```javascript
+
+const SudoSwap = require("@musedao/sudoswap.js");
+
+const sudo = new SudoSwap(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY}`); //pass rpc
+const pool = sudo.getPool("0x6210e6229aec95d17f57dab93e042013d7d3603c"); //any sudo pool
+```
+
 ## Sudo
+
+```javascript
+sudo.formatDelta("0.05", "exponential") // returns correct format for a 5% exponential curve.
+sudo.formatFee("0.05") // returns correct format for a 5% fee.
+
+```
 
 ## Pool
 
 ### Getters
 
-```
+```javascript
 pool.getType() // Type of pool: TRADE/SELL/BUY
 pool.getNFT() // Address of the NFT
 pool.getDelta()
 pool.getSpotPrice()
 pool.getFee()
 pool.getAssetRecipient()
+pool.getAllHeldIds() // return all nft ids in the pool
 pool.getNFTContract() // return an ethers.js instance of the ERC721 contract
 pool.getPoolContract() // return an ethers.js instance of the pool contract
 ```
 
 ### History
 
-```
+```javascript
 pool.getTrades()
 ```
 
-An array containing all past trades from the pool:
+Retturns an array containing all past trades from the pool:
 
-```
+```javascript
 [
     {
     type: 'NFT_OUT_POOL',
