@@ -8,9 +8,9 @@ function Router(sudo, chainId) {
   this.sudo = sudo;
   this.address =
     chainId == 1
-      ? "0x2b2e8cda09bba9660dca5cb6233787738ad68329"
+      ? "0x2b2e8cda09bba9660dca5cb6233787738ad68329" //mainnet
       : chainId == 4
-      ? "0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5"
+      ? "0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5" //rinkeby
       : null;
 
   this.contract = new ethers.Contract(this.address, ABI, this.sudo.provider);
