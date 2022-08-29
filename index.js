@@ -3,8 +3,8 @@ const SudoSwap = require('./src/SudoSwap.js');
 (async () => {
     try {
 
-        const sudo = new SudoSwap("https://nodes.mewapi.io/rpc/eth")
-        const pool = sudo.getPool("0x58a474582Ae4547CaEe0B6ddB9fa0f91BDDaABf8")
+        const sudo = new SudoSwap("https://eth-mainnet.g.alchemy.com/v2/_vDB38mJZ39GyrIYbhoFtEkxYVydis-o")
+        const pool = sudo.getPool("0xce50f629ab7e957b7fadc2d307156e788b6c3bb9")
 
         let nft = await pool.getNFT()
         console.log(nft)
@@ -12,9 +12,9 @@ const SudoSwap = require('./src/SudoSwap.js');
         let spotPrice = await pool.getSpotPrice()
         console.log(spotPrice)
 
-        let trades = await pool.getTradesIn();
+        let trades = await pool.getTrades();
         console.log(trades);
-
+    return;
         let type = await pool.getType()
         console.log(type)
 

@@ -3,7 +3,7 @@ const moize = require('moize');
 
 const Pool = require("./Pool");
 
-const BLOCK_CACHE_SIZE = 100;
+const BLOCK_CACHE_SIZE = 300;
 const TRANSACTION_CACHE_SIZE = 100;
 
 function SudoSwap (web3Provider) {

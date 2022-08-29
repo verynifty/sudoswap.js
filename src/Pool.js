@@ -124,7 +124,7 @@ Pool.prototype.getTradesIn = async function () {
     //console.log(outtransfers)
 }
 
-Pool.prototype.getTradesIn = async function () {
+Pool.prototype.getTradesOut = async function () {
     let trades = [];
 
     let outfilter = this.contract.filters.SwapNFTOutPair();
@@ -147,7 +147,7 @@ Pool.prototype.getTradesIn = async function () {
         
         // we get the spot Price after the swapIn event
         let spotPriceAfter = spotPrices.filter(function(p) {
-            return (p.transactionHash == i.transactionHash && p.logIndex < i.logIndex || (  p.blockNumber >= i.blockNumber));
+            return (p.transactionHash == i.transactionHash && p.logIndex < i.logIndex);
         })
         //console.log("price after == ", spotPriceAfter)
         spotPriceAfter = spotPriceAfter.length > 0 ? spotPriceAfter[0].args.newSpotPrice: (await this.getSpotPrice())
@@ -173,13 +173,25 @@ Pool.prototype.getTradesIn = async function () {
             priceBefore: spotPriceBefore.toString(),
             priceAfter: spotPriceAfter.toString(),
             timestamp: b.timestamp,
-            pool: this.address
+            pool: this.address,
+            logIndex: i.logIndex
         }
         console.log(t)
         trades.push(t)
     }
     return trades;
     //console.log(outtransfers)
+}
+
+Pool.prototype.getTrades = async function() {
+    const result = await Promise.all([this.getTradesOut(), this.getTradesIn()])
+    let trades = [...result[0], ...result[1]];
+    return (trades.sort(function (a, b) {
+        if (a.blockNumber == b.blockNumber) {
+            return a.logIndex - b.logIndex;
+        }
+        return a.blockNumber - b.blockNumber;
+    }))
 }
 
 module.exports = Pool;
