@@ -116,7 +116,7 @@ Pool.prototype.getTradesIn = async function () {
             return (t.args.tokenId.toString())
         });
         
-        console.log("======== TX")
+        //console.log("======== TX")
         let t = {
             type: "NFT_IN_POOL",
             transactionHash: i.transactionHash,
@@ -129,7 +129,7 @@ Pool.prototype.getTradesIn = async function () {
             timestamp: b.timestamp,
             pool: this.address
         }
-        console.log(t)
+        //console.log(t)
         trades.push(t)
     }
     return trades;
