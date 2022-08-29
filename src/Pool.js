@@ -51,11 +51,17 @@ Pool.prototype.getAssetRecipient = async function() {
 }
 
 Pool.prototype.getNFTContract = async function() {
-    if (this.nftContract != null) {
+    if (this.nft == null) {
         await this.getNFT()
     }
-    this.nftContract = new ethers.Contract(this.nft, NFTABI, this.sudo.provider);
+    if (this.nftContract == null) {
+        this.nftContract = new ethers.Contract(this.nft, NFTABI, this.sudo.provider);
+    }
     return (this.nftContract);
+}
+
+Pool.prototype.getPoolContract = async function() {
+    return (this.contract);
 }
 
 Pool.prototype.getSellNFTQuote = async function (nbNFT) {
