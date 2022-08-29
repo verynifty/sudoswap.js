@@ -2,7 +2,7 @@
   "name": "@musedao/sudoswap.js",
   "version": "0.1.0",
   "description": "A small js unofficial librarby to work with sudoswap AMM",
-  "main": "index.js",
+  "main": "src/Sudoswap.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
