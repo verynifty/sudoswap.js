@@ -8,10 +8,12 @@ const BLOCK_CACHE_SIZE = 300;
 const TRANSACTION_CACHE_SIZE = 100;
 
 function Sudoswap(web3Provider, pKey = null) {
+  this.isWeb3Provider = false;
   if (typeof web3Provider == "string") {
     this.provider = new ethers.providers.JsonRpcProvider(web3Provider);
   } else {
     this.provider = new ethers.providers.Web3Provider(web3Provider, "any");
+    this.isWeb3Provider = true;
   }
 
   // pass pkey for buy and sell functionality
@@ -40,6 +42,16 @@ function Sudoswap(web3Provider, pKey = null) {
     maxArgs: 1,
   });
 }
+
+Sudoswap.prototype.getSigner = async function () {
+  // if connected via metamask
+  if (this.isWeb3Provider) {
+    await this.provider.send("eth_requestAccounts", []);
+    return this.provider.getSigner();
+  } else {
+    return this.signer;
+  }
+};
 
 /*
     Instanciate a new pool

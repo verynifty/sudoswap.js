@@ -23,9 +23,7 @@ Router.prototype.swapETHForAnyNFTs = async function (
   deadline,
   ethAmount
 ) {
-  await this.sudo.provider.send("eth_requestAccounts", []);
-  const signer = this.sudo.provider.getSigner();
-
+  const signer = await this.sudo.getSigner();
   const tx = await this.contract
     .connect(signer)
     .swapETHForAnyNFTs(swapList, ethRecipient, nftRecipient, deadline, {
@@ -42,8 +40,10 @@ Router.prototype.swapETHForSpecificNFTs = async function (
   deadline,
   ethAmount
 ) {
+  const signer = await this.sudo.getSigner();
+
   const tx = await this.contract
-    .connect(this.sudo.signer)
+    .connect(signer)
     .swapETHForSpecificNFTs(swapList, ethRecipient, nftRecipient, deadline, {
       value: ethAmount,
     });
@@ -57,8 +57,10 @@ Router.prototype.swapNFTsForToken = async function (
   tokenRecipient,
   deadline
 ) {
+  const signer = await this.sudo.getSigner();
+
   const tx = await this.contract
-    .connect(this.sudo.signer)
+    .connect(signer)
     .swapNFTsForToken(swapList, minOutput, tokenRecipient, deadline);
 
   return tx;
