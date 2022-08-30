@@ -22,15 +22,20 @@ CurveUtils.prototype.addressToCurveType = function(network, address) {
 CurveUtils.prototype.getBuyInfo = function(type, curve, fee, delta, spotPrice, nbNfts) {
     if (curve == 'EXPONENTIAL') {
 
-    } else {
-
+    } else if (curve == 'LINEAR') {
+        // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/LinearCurve.sol
+        let newSpotPrice = spotPrice.plus(delta.mul(nbNfts))
+        let protocolFee = "";
+        let lpFee  = "" 
+        let inputValue = ""
+        console.log(newSpotPrice)
     }
 }
 
 CurveUtils.prototype.getSellInfo = function(type, curve, fee, delta, spotPrice, nbNfts) {
     if (curve == 'EXPONENTIAL') {
 
-    } else {
+    } else if (curve == 'LINEAR') {
 
     }
 }
