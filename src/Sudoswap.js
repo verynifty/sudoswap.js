@@ -10,7 +10,11 @@ const TRANSACTION_CACHE_SIZE = 100;
 function Sudoswap(web3Provider, pKey = null) {
   this.isWeb3Provider = false;
   if (typeof web3Provider == "string") {
-    this.provider = new ethers.providers.JsonRpcProvider(web3Provider);
+    if (web3Provider.startsWith("http")) {
+      this.provider = new ethers.providers.JsonRpcProvider(web3Provider);
+    } else if ( web3Provider.startsWith("ws")) {
+      this.provider = new ethers.providers.WebSocketProvider(web3Provider);
+    }
   } else {
     this.provider = new ethers.providers.Web3Provider(web3Provider, "any");
     this.isWeb3Provider = true;

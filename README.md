@@ -67,7 +67,7 @@ pool.getPoolContract() // return an ethers.js instance of the pool contract
 pool.getTrades()
 ```
 
-Retturns an array containing all past trades from the pool:
+Returns an array containing all past trades from the pool:
 
 ```javascript
 [
