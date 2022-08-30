@@ -46,6 +46,8 @@ sudo.formatFee("0.05") // returns correct format for a 5% fee.
 ### Getters
 
 ```javascript
+pool.getSellNFTQuote(nbNFT) //get x NFTs sell quote
+pool.getBuyNFTQuote(nbNFT) //get x NFTs buy quote
 pool.getType() // Type of pool: TRADE/SELL/BUY
 pool.getNFT() // Address of the NFT
 pool.getDelta()
@@ -105,7 +107,7 @@ To execute trades via the router you need to pass a private key when intializing
 const router = await sudo.router();
 
 //buy any nfts from pools
-const tx await router.swapETHForAnyNFTs(
+const tx = await router.swapETHForAnyNFTs(
   swapList,
   ethRecipient,
   nftRecipient,
