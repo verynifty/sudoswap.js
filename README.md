@@ -55,6 +55,7 @@ pool.getDelta()
 pool.getSpotPrice()
 pool.getFee()
 pool.getOwner() // return owner of pool
+pool.getCurve() // EXPONENTIAL or LINEAR
 pool.getAssetRecipient()
 pool.getAllHeldIds() // return all nft ids in the pool
 pool.getNFTContract() // return an ethers.js instance of the ERC721 contract
