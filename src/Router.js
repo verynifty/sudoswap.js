@@ -23,8 +23,11 @@ Router.prototype.swapETHForAnyNFTs = async function (
   deadline,
   ethAmount
 ) {
+  await this.sudo.provider.send("eth_requestAccounts", []);
+  const signer = this.sudo.provider.getSigner();
+
   const tx = await this.contract
-    .connect(this.sudo.signer)
+    .connect(signer)
     .swapETHForAnyNFTs(swapList, ethRecipient, nftRecipient, deadline, {
       value: ethAmount,
     });
