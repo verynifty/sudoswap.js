@@ -107,6 +107,11 @@ To execute trades via the router you need to pass a private key when intializing
 
 const router = await sudo.router();
 
+
+await router.isApprovedForRouter(nftCollection); //check if signer gave approval to the router for spend
+
+const tx = await router.approveCollection(nftCollection); //set approval from nft collection to the router if wasn't set.
+
 //buy any nfts from pools
 const tx = await router.swapETHForAnyNFTs(
   swapList,

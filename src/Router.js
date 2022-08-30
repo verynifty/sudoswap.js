@@ -66,6 +66,24 @@ Router.prototype.swapNFTsForToken = async function (
   return tx;
 };
 
+Router.prototype.approveCollection = async function (nftCollection) {
+  const isApproved = await this.isApprovedForRouter(nftCollection);
+
+  if (!isApproved) {
+    let nftContract = new ethers.Contract(
+      nftCollection,
+      NFTABI,
+      this.sudo.provider
+    );
+    const signer = await this.sudo.getSigner();
+
+    const tx = await nftContract
+      .connect(signer)
+      .setApprovalForAll(ADDRESSES[this.chainId], true);
+    return tx;
+  }
+};
+
 Router.prototype.isApprovedForRouter = async function (nftCollection) {
   let nftContract = new ethers.Contract(
     nftCollection,
@@ -76,6 +94,7 @@ Router.prototype.isApprovedForRouter = async function (nftCollection) {
     this.sudo.signer.address,
     ADDRESSES[this.chainId]
   );
+  return res;
   console.log(res);
 };
 
