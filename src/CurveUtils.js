@@ -19,7 +19,7 @@ CurveUtils.prototype.addressToCurveType = function(network, address) {
     return CURVES[network][address];
 }
 
-CurveUtils.prototype.getBuyInfo = function(type, curve, delta, quantity, nbNfts) {
+CurveUtils.prototype.getBuyInfo = function(type, curve, fee, delta, spotPrice, nbNfts) {
     if (curve == 'EXPONENTIAL') {
 
     } else {
@@ -27,7 +27,7 @@ CurveUtils.prototype.getBuyInfo = function(type, curve, delta, quantity, nbNfts)
     }
 }
 
-CurveUtils.prototype.getSellInfo = function(type, curve, delta, quantity, nbNfts) {
+CurveUtils.prototype.getSellInfo = function(type, curve, fee, delta, spotPrice, nbNfts) {
     if (curve == 'EXPONENTIAL') {
 
     } else {
