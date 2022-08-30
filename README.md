@@ -26,6 +26,7 @@ const sudoswap = require("@musedao/sudoswap.js");
 const sudo = new sudoswap(`https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY}`, process.env.PRIVATE_KEY); //RPC and optional private key if used for sending transactions
 
 // Or you can pass a web3 provider exposed by metamask/walletconnect 
+// window.ethereum.enable();
 //const sudo = new sudoswap(window.ethereum)
 
 const pool = sudo.getPool("0x6210e6229aec95d17f57dab93e042013d7d3603c"); //any sudo pool
