@@ -1,5 +1,6 @@
 const { ethers } = require("ethers");
 const moize = require("moize");
+const CurveUtils = require("./CurveUtils");
 
 const Pool = require("./Pool");
 const Router = require("./Router");
@@ -12,13 +13,15 @@ function Sudoswap(web3Provider, pKey = null) {
   if (typeof web3Provider == "string") {
     if (web3Provider.startsWith("http")) {
       this.provider = new ethers.providers.JsonRpcProvider(web3Provider);
-    } else if ( web3Provider.startsWith("ws")) {
+    } else if (web3Provider.startsWith("ws")) {
       this.provider = new ethers.providers.WebSocketProvider(web3Provider);
     }
   } else {
     this.provider = new ethers.providers.Web3Provider(web3Provider, "any");
     this.isWeb3Provider = true;
   }
+
+  this.curveUtils = new CurveUtils(this);
 
   // pass pkey for buy and sell functionality
   if (pKey) {
@@ -64,12 +67,20 @@ Sudoswap.prototype.getPool = function (address) {
   return new Pool(this, address);
 };
 
+Sudoswap.prototype.getNetwork = async function () {
+  return (await this.provider.getNetwork()).chainId;
+}
+
 // Instantiate the router
 Sudoswap.prototype.router = async function () {
-  const chainId = (await this.provider.getNetwork()).chainId;
+  const chainId = (await this.getNetwork());
 
   return new Router(this, chainId);
 };
+
+Sudoswap.prototype.getCurveUtils = function() {
+  return this.curveUtils;
+}
 
 Sudoswap.prototype.formatDelta = function (val, type) {
   if (type == "linear") {

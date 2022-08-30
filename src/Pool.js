@@ -25,6 +25,14 @@ Pool.prototype.getType = async function () {
   return this.type;
 };
 
+Pool.prototype.getCurve = async function () {
+  if (this.curve != null) {
+    return this.curve;
+  }
+  this.type = this.sudo.getCurveUtils().addressToCurveType(await this.sudo.getNetwork(), await this.contract.bondingCurve());
+  return this.type;
+};
+
 Pool.prototype.getNFT = async function () {
   if (this.nft != null) {
     return this.nft;
@@ -53,7 +61,11 @@ Pool.prototype.getSpotPrice = async function () {
 };
 
 Pool.prototype.getFee = async function () {
-  return await this.contract.fee();
+  if (this.fee != null) {
+    return this.fee;
+  }
+  this.fee = await this.contract.fee();
+  return this.fee;
 };
 
 Pool.prototype.getDelta = async function () {
@@ -174,6 +186,12 @@ Pool.prototype.getTradesIn = async function () {
 };
 
 Pool.prototype.getTradesOut = async function () {
+
+  let fee = "0"
+  if (await this.getType() == "TRADE") {
+    fee = await this.getFee();
+  }
+
   let trades = [];
 
   let outfilter = this.contract.filters.SwapNFTOutPair();
@@ -231,6 +249,13 @@ Pool.prototype.getTradesOut = async function () {
         return t.args.tokenId.toString();
       });
 
+    let volume = spotPriceAfter.sub(spotPriceBefore);
+    //console.log("VOLUME", volume.toString())
+    let lpFees = volume.mul(fee).div(ethers.utils.parseUnits("100", "ether"))
+    volume = volume.sub(lpFees)
+    //console.log(i.transactionHash)
+    //console.log("VOLUME", volume.toString())
+    //console.log("FEE ", lpFees.toString())
     // console.log("======== TX")
     let t = {
       type: "NFT_OUT_POOL",
