@@ -11,8 +11,7 @@ function Sudoswap(web3Provider, pKey = null) {
   if (typeof web3Provider == "string") {
     this.provider = new ethers.providers.JsonRpcProvider(web3Provider);
   } else {
-    this.provider = new ethers.providers.Web3Provider(web3Provider);
-    this.signer = this.provider.getSigner();
+    this.provider = new ethers.providers.Web3Provider(web3Provider, "any");
   }
 
   // pass pkey for buy and sell functionality
