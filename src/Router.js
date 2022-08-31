@@ -75,6 +75,7 @@ Router.prototype.approveCollection = async function (nftCollection) {
       NFTABI,
       this.sudo.provider
     );
+
     const signer = await this.sudo.getSigner();
 
     const tx = await nftContract
@@ -85,15 +86,13 @@ Router.prototype.approveCollection = async function (nftCollection) {
 };
 
 Router.prototype.isApprovedForRouter = async function (nftCollection) {
-  const signer = await this.sudo.getSigner();
-
   let nftContract = new ethers.Contract(
     nftCollection,
     NFTABI,
     this.sudo.provider
   );
   let res = await nftContract.isApprovedForAll(
-    signer.address,
+    this.sudo.connectedAddress,
     ADDRESSES[this.chainId]
   );
   return res;

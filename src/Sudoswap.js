@@ -9,6 +9,8 @@ const BLOCK_CACHE_SIZE = 300;
 const TRANSACTION_CACHE_SIZE = 100;
 
 function Sudoswap(web3Provider, pKey = null) {
+  this.connectedAddress = null;
+
   this.isWeb3Provider = false;
   if (typeof web3Provider == "string") {
     if (web3Provider.startsWith("http")) {
@@ -27,6 +29,7 @@ function Sudoswap(web3Provider, pKey = null) {
   if (pKey) {
     const wallet = new ethers.Wallet(pKey);
     this.signer = wallet.connect(this.provider);
+    this.connectedAddress = this.signer.address;
   }
 
   const getBlock = async function (blockNumber) {
@@ -54,7 +57,10 @@ Sudoswap.prototype.getSigner = async function () {
   // if connected via metamask
   if (this.isWeb3Provider) {
     await this.provider.send("eth_requestAccounts", []);
-    return this.provider.getSigner();
+
+    const signer = this.provider.getSigner();
+    this.connectedAddress = await signer.getAddress();
+    return signer;
   } else {
     return this.signer;
   }
@@ -69,18 +75,18 @@ Sudoswap.prototype.getPool = function (address) {
 
 Sudoswap.prototype.getNetwork = async function () {
   return (await this.provider.getNetwork()).chainId;
-}
+};
 
 // Instantiate the router
 Sudoswap.prototype.router = async function () {
-  const chainId = (await this.getNetwork());
+  const chainId = await this.getNetwork();
 
   return new Router(this, chainId);
 };
 
-Sudoswap.prototype.getCurveUtils = function() {
+Sudoswap.prototype.getCurveUtils = function () {
   return this.curveUtils;
-}
+};
 
 Sudoswap.prototype.formatDelta = function (val, type) {
   if (type == "linear") {
