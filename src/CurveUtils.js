@@ -23,11 +23,10 @@ CurveUtils.prototype.addressToCurveType = function (network, address) {
     return CURVES[network][address];
 }
 
-CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, nbNfts) {
+CurveUtils.prototype.getBuyInfo = function (curve, fee, delta, spotPrice, nbNfts) {
 
     // make sure we deal with bignumbers
     fee = ethers.BigNumber.from(fee);
-    console.log(fee.toString())
     delta = ethers.BigNumber.from(delta);
     spotPrice = ethers.BigNumber.from(spotPrice);
     nbNfts = ethers.BigNumber.from(nbNfts);
@@ -124,11 +123,106 @@ CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, 
     }
 }
 
-CurveUtils.prototype.getSellInfo = function (type, curve, fee, delta, spotPrice, nbNfts) {
+CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNfts) {
+    // make sure we deal with bignumbers
+    fee = ethers.BigNumber.from(fee);
+    delta = ethers.BigNumber.from(delta);
+    spotPrice = ethers.BigNumber.from(spotPrice);
+    nbNfts = ethers.BigNumber.from(nbNfts);
+
+    let inputValue;
+    let protocolFee;
+    let newDelta;
+
     if (curve == 'EXPONENTIAL') {
+        // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
+        /*
+        uint256 invDelta = FixedPointMathLib.WAD.fdiv(
+            delta,
+            FixedPointMathLib.WAD
+        );
+        uint256 invDeltaPowN = invDelta.fpow(numItems, FixedPointMathLib.WAD);
+        */
+        let invDelta = ETHER.div(nbNfts);
+        let invDeltaPowN = invDelta.pow(nbNfts);
+        /*
+          uint256 newSpotPrice_ = uint256(spotPrice).fmul(
+            deltaPowN,
+            FixedPointMathLib.WAD
+        );
+        */
+        newSpotPrice = spotPrice.mul(invDeltaPowN);
 
+        /*
+        newSpotPrice = uint128(
+            uint256(spotPrice).fmul(invDeltaPowN, FixedPointMathLib.WAD)
+        );
+        */
+        newSpotPrice = newSpotPrice.mul(
+            (invDeltaPowN.sub(ETHER)).div(delta.sub(ETHER))
+        ).div(ETHER);
+        /*
+        outputValue = uint256(spotPrice).fmul(
+            (FixedPointMathLib.WAD - invDeltaPowN).fdiv(
+                FixedPointMathLib.WAD - invDelta,
+                FixedPointMathLib.WAD
+            ),
+            FixedPointMathLib.WAD
+        );
+        */
+        outputValue = spotPrice.mul(
+            (invDeltaPowN.sub(ETHER)).div(delta.sub(ETHER)).div(ETHER.sub(invDelta))
+        ).div(ETHER);
+        /*
+        protocolFee = inputValue.fmul(
+              protocolFeeMultiplier,
+              FixedPointMathLib.WAD
+          );
+          */
+        protocolFee = inputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
+        // inputValue += inputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
+        lpFee = inputValue.mul(fee).div(ETHER);
+        inputValue = inputValue.add(lpFee);
+        // inputValue += protocolFee;
+        inputValue = inputValue.add(protocolFee);
+
+        newDelta = delta;
     } else if (curve == 'LINEAR') {
+        // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/LinearCurve.sol
 
+        // uint256 newSpotPrice_ = spotPrice + delta * numItems;
+        newSpotPrice = spotPrice.add(delta.mul(nbNfts));
+        // uint256 buySpotPrice = spotPrice + delta;
+        buySpotPrice = spotPrice.add(delta);
+        /* 
+        inputValue =
+            numItems *
+            buySpotPrice +
+            (numItems * (numItems - 1) * delta) /
+            2;
+        */
+        inputValue = nbNfts.mul(buySpotPrice).add(nbNfts.mul((nbNfts.sub(1)).mul(delta).div(2)))
+
+        /*
+        protocolFee = inputValue.fmul(
+            protocolFeeMultiplier,
+            FixedPointMathLib.WAD
+        );
+        */
+        protocolFee = inputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
+
+        // inputValue += inputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
+        lpFee = inputValue.mul(fee).div(ETHER);
+        inputValue = inputValue.add(lpFee);
+
+
+        // inputValue += protocolFee;
+        inputValue = inputValue.add(protocolFee);
+
+        newDelta = delta;
+    }
+    return {
+        inputValue, protocolFee, newDelta, lpFee, protocolFee, newSpotPrice
     }
 }
 
