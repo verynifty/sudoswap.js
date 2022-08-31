@@ -217,34 +217,33 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         // uint256 buySpotPrice = spotPrice + delta;
         buySpotPrice = spotPrice.add(delta);
         /* 
-        inputValue =
+        outputValue =
             numItems *
-            buySpotPrice -
+            spotPrice -
             (numItems * (numItems - 1) * delta) /
             2;
         */
-        inputValue = nbNfts.mul(buySpotPrice).sub(nbNfts.mul((nbNfts.sub(1)).mul(delta).div(2)))
+            outputValue = nbNfts.mul(spotPrice).sub(nbNfts.mul((nbNfts.sub(1)).mul(delta).div(2)))
 
         /*
-        protocolFee = inputValue.fmul(
+        protocolFee = outputValue.fmul(
             protocolFeeMultiplier,
             FixedPointMathLib.WAD
         );
         */
-        protocolFee = inputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
+        protocolFee = outputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
 
-        // inputValue += inputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
-        lpFee = inputValue.mul(fee).div(ETHER);
-        inputValue = inputValue.add(lpFee);
+        // outputValue += outputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
+        lpFee = outputValue.mul(fee).div(ETHER);
+        outputValue = outputValue.add(lpFee);
 
-
-        // inputValue += protocolFee;
-        inputValue = inputValue.add(protocolFee);
+        // outputValue += protocolFee;
+        outputValue = outputValue.add(protocolFee);
 
         newDelta = delta;
     }
     return {
-        inputValue, protocolFee, newDelta, lpFee, protocolFee, newSpotPrice
+        outputValue, protocolFee, newDelta, lpFee, protocolFee, newSpotPrice
     }
 }
 
