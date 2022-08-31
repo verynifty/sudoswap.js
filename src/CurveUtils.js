@@ -11,28 +11,59 @@ const CURVES = {
     }
 }
 
+const PROTOCOL_FEE = 2;
+
 function CurveUtils(sudo) {
-  this.sudo = sudo;
+    this.sudo = sudo;
 }
 
-CurveUtils.prototype.addressToCurveType = function(network, address) {
+CurveUtils.prototype.addressToCurveType = function (network, address) {
     return CURVES[network][address];
 }
 
-CurveUtils.prototype.getBuyInfo = function(type, curve, fee, delta, spotPrice, nbNfts) {
+CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, nbNfts) {
+
+    // make sure we deal with bignumbers
+    fee = ethers.BigNumber.from(fee);
+    delta = ethers.BigNumber.from(delta);
+    spotPrice = ethers.BigNumber.from(spotPrice);
+    nbNfts = ethers.BigNumber.from(nbNfts);
+
+    let inputValue;
+    let protocolFee;
+    let newDelta;
     if (curve == 'EXPONENTIAL') {
 
     } else if (curve == 'LINEAR') {
         // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/LinearCurve.sol
-        let newSpotPrice = spotPrice.plus(delta.mul(nbNfts))
-        let protocolFee = "";
-        let lpFee  = "" 
-        let inputValue = ""
+        // uint256 newSpotPrice_ = spotPrice + delta * numItems;
+        newSpotPrice = spotPrice.add(delta.mul(nbNfts));
+        // uint256 buySpotPrice = spotPrice + delta;
+        buySpotPrice = spotPrice.add(delta);
+        /* 
+        inputValue =
+            numItems *
+            buySpotPrice +
+            (numItems * (numItems - 1) * delta) /
+            2;
+        */
+        inputValue = nbNfts.mul(buySpotPrice).add(nbNfts.mul(nbNfts.sub(1).mul(delta))).div(2)
+        /*
+        protocolFee = inputValue.fmul(
+            protocolFeeMultiplier,
+            FixedPointMathLib.WAD
+        );
+        */
+        protocolFee = inputValue.mul(PROTOCOL_FEE);
+        newDelta = delta;
         console.log(newSpotPrice)
+    }
+    return {
+        inputValue, protocolFee, newDelta, protocolFee
     }
 }
 
-CurveUtils.prototype.getSellInfo = function(type, curve, fee, delta, spotPrice, nbNfts) {
+CurveUtils.prototype.getSellInfo = function (type, curve, fee, delta, spotPrice, nbNfts) {
     if (curve == 'EXPONENTIAL') {
 
     } else if (curve == 'LINEAR') {

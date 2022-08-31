@@ -117,6 +117,7 @@ Pool.prototype.getBuyNFTQuote = async function (nbNFT) {
 Pool.prototype.getTradesIn = async function () {
   let trades = [];
 
+
   let infilter = this.contract.filters.SwapNFTInPair();
   let inevents = await this.contract.queryFilter(infilter);
 
@@ -194,6 +195,10 @@ Pool.prototype.getTradesOut = async function () {
 
   let trades = [];
 
+  let curveType = await this.getCurve();
+  let delta = await this.getDelta();
+  let type = await this.getType();
+
   let outfilter = this.contract.filters.SwapNFTOutPair();
   let outevents = await this.contract.queryFilter(outfilter);
 
@@ -235,6 +240,7 @@ Pool.prototype.getTradesOut = async function () {
         ? spotPriceAfter[0].args.newSpotPrice
         : await this.getSpotPrice();
 
+
     // let tx = await this.sudo.getTransaction(i.transactionHash);
     let b = await this.sudo.getBlock(i.blockNumber);
     let buyer = "";
@@ -249,6 +255,8 @@ Pool.prototype.getTradesOut = async function () {
         return t.args.tokenId.toString();
       });
 
+    let curveSimulation = await this.sudo.getCurveUtils().getBuyInfo(type, curveType, fee, delta, spotPriceBefore, nfts.length)
+
     let volume = spotPriceAfter.sub(spotPriceBefore);
     //console.log("VOLUME", volume.toString())
     let lpFees = volume.mul(fee).div(ethers.utils.parseUnits("100", "ether"))
@@ -257,6 +265,8 @@ Pool.prototype.getTradesOut = async function () {
     //console.log("VOLUME", volume.toString())
     //console.log("FEE ", lpFees.toString())
     // console.log("======== TX")
+    console.log("INPUT", curveSimulation.inputValue.toString(), i.transactionHash, nfts.length);
+
     let t = {
       type: "NFT_OUT_POOL",
       transactionHash: i.transactionHash,
