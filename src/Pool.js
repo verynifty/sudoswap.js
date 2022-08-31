@@ -210,7 +210,6 @@ Pool.prototype.getTradesOut = async function () {
   let intransfers = await nft.queryFilter(intransfersfilter);
 
   for (const i of outevents) {
-    //console.log(i.blockNumber);
     // We get the spot price before the swapIn event
     let spotPriceBefore = spotPrices.filter(function (p) {
       return (
@@ -228,7 +227,7 @@ Pool.prototype.getTradesOut = async function () {
     let spotPriceAfter = spotPrices.filter(function (p) {
       return p.transactionHash == i.transactionHash && p.logIndex < i.logIndex;
     });
-    //console.log("price after == ", spotPriceAfter)
+    // console.log("price after == ", spotPriceAfter)
     spotPriceAfter =
       spotPriceAfter.length > 0
         ? spotPriceAfter[0].args.newSpotPrice
@@ -251,9 +250,9 @@ Pool.prototype.getTradesOut = async function () {
 
     // let curveSimulation = await this.sudo.getCurveUtils().getBuyInfo(type, curveType, fee, delta, spotPriceBefore, nfts.length)
 
-    //console.log(i.transactionHash)
-    //console.log("VOLUME", volume.toString())
-    //console.log("FEE ", lpFees.toString())
+    // console.log(i.transactionHash)
+    // console.log("VOLUME", volume.toString())
+    // console.log("FEE ", lpFees.toString())
     // console.log("======== TX")
     // console.log("BEFORE", spotPriceBefore.toString())
     // console.log("AFTER", spotPriceAfter.toString(), newSpotPrice.toString())
