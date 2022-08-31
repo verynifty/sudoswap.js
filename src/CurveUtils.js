@@ -38,9 +38,56 @@ CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, 
 
     if (curve == 'EXPONENTIAL') {
         // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
+        /*
+        uint256 deltaPowN = uint256(delta).fpow(
+            numItems,
+            FixedPointMathLib.WAD
+        );
+        */
+        let deltaPowN = delta.pow(nbNfts);
+        /*
+          uint256 newSpotPrice_ = uint256(spotPrice).fmul(
+            deltaPowN,
+            FixedPointMathLib.WAD
+        );
+        */
+        newSpotPrice = spotPrice.mul(deltaPowN);
+        /*
+        uint256 buySpotPrice = uint256(spotPrice).fmul(
+             delta,
+             FixedPointMathLib.WAD
+         );
+         */
+        buySpotPrice = spotPrice.mul(delta);
+        /*
+        inputValue = buySpotPrice.fmul(
+             (deltaPowN - FixedPointMathLib.WAD).fdiv(
+                 delta - FixedPointMathLib.WAD,
+                 FixedPointMathLib.WAD
+             ),
+             FixedPointMathLib.WAD
+         );
+        */
+        inputValue = buySpotPrice.mul(
+            (deltaPowN.sub(ETHER)).div(delta.sub(ETHER))
+        )
+        /*
+        protocolFee = inputValue.fmul(
+              protocolFeeMultiplier,
+              FixedPointMathLib.WAD
+          );
+          */
+        protocolFee = inputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
+        // inputValue += inputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
+        lpFee = inputValue.mul(fee).div(ETHER);
+        inputValue = inputValue.add(lpFee);
+        // inputValue += protocolFee;
+        inputValue = inputValue.add(protocolFee);
 
+        newDelta = delta;
     } else if (curve == 'LINEAR') {
         // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/LinearCurve.sol
+
         // uint256 newSpotPrice_ = spotPrice + delta * numItems;
         newSpotPrice = spotPrice.add(delta.mul(nbNfts));
         // uint256 buySpotPrice = spotPrice + delta;
