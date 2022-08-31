@@ -189,13 +189,9 @@ Pool.prototype.getTradesIn = async function () {
 Pool.prototype.getTradesOut = async function () {
 
   let fee = "0"
-  console.log(await this.getType())
   let type = await this.getType();
-  console.log("t", type)
   if (type == "TRADE") {
-    console.log("FEE")
     fee = await this.getFee();
-    console.log(fee.toString())
   }
 
   let trades = [];
@@ -214,7 +210,7 @@ Pool.prototype.getTradesOut = async function () {
   let intransfers = await nft.queryFilter(intransfersfilter);
 
   for (const i of outevents) {
-    console.log(i.blockNumber);
+    //console.log(i.blockNumber);
     // We get the spot price before the swapIn event
     let spotPriceBefore = spotPrices.filter(function (p) {
       return (
@@ -223,12 +219,6 @@ Pool.prototype.getTradesOut = async function () {
         p.transactionHash != i.transactionHash
       );
     });
-    console.log("SPOT BEFOOOORE", spotPriceBefore.length > 0);
-    if (spotPriceBefore.length > 0) {
-      console.log(
-        spotPriceBefore[spotPriceBefore.length - 1].args.newSpotPrice.toString()
-      );
-    }
     spotPriceBefore =
       spotPriceBefore.length > 0
         ? spotPriceBefore[spotPriceBefore.length - 1].args.newSpotPrice
@@ -259,20 +249,16 @@ Pool.prototype.getTradesOut = async function () {
         return t.args.tokenId.toString();
       });
 
-    let curveSimulation = await this.sudo.getCurveUtils().getBuyInfo(type, curveType, fee, delta, spotPriceBefore, nfts.length)
+    // let curveSimulation = await this.sudo.getCurveUtils().getBuyInfo(type, curveType, fee, delta, spotPriceBefore, nfts.length)
 
-    let volume = spotPriceAfter.sub(spotPriceBefore);
-    //console.log("VOLUME", volume.toString())
-    let lpFees = volume.mul(fee).div(ethers.utils.parseUnits("100", "ether"))
-    volume = volume.sub(lpFees)
     //console.log(i.transactionHash)
     //console.log("VOLUME", volume.toString())
     //console.log("FEE ", lpFees.toString())
     // console.log("======== TX")
-    console.log("BEFORE", spotPriceBefore.toString())
-    console.log("AFTER", spotPriceAfter.toString(), newSpotPrice.toString())
-    console.log("INPUT", curveSimulation.inputValue.toString(), i.transactionHash, nfts.length,);
-    console.log("PROTOCOL FEE", curveSimulation.protocolFee.toString())
+    // console.log("BEFORE", spotPriceBefore.toString())
+    // console.log("AFTER", spotPriceAfter.toString(), newSpotPrice.toString())
+    // console.log("INPUT", curveSimulation.inputValue.toString(), i.transactionHash, nfts.length,);
+    // console.log("PROTOCOL FEE", curveSimulation.protocolFee.toString())
     let t = {
       type: "NFT_OUT_POOL",
       transactionHash: i.transactionHash,
