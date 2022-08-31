@@ -85,13 +85,15 @@ Router.prototype.approveCollection = async function (nftCollection) {
 };
 
 Router.prototype.isApprovedForRouter = async function (nftCollection) {
+  const signer = await this.sudo.getSigner();
+
   let nftContract = new ethers.Contract(
     nftCollection,
     NFTABI,
     this.sudo.provider
   );
   let res = await nftContract.isApprovedForAll(
-    this.sudo.signer.address,
+    signer.address,
     ADDRESSES[this.chainId]
   );
   return res;
