@@ -11,7 +11,8 @@ const CURVES = {
     }
 }
 
-const PROTOCOL_FEE = 2;
+const PROTOCOL_FEE = ethers.BigNumber.from("5000000000000000");
+const PROTOCOL_FEE_DIVIDER = ethers.BigNumber.from("1000000000000000000")
 
 function CurveUtils(sudo) {
     this.sudo = sudo;
@@ -47,19 +48,22 @@ CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, 
             (numItems * (numItems - 1) * delta) /
             2;
         */
-        inputValue = nbNfts.mul(buySpotPrice).add(nbNfts.mul(nbNfts.sub(1).mul(delta))).div(2)
+        inputValue = nbNfts.mul(buySpotPrice).add(nbNfts.mul(nbNfts.sub(1).mul(delta).div(2)))
         /*
         protocolFee = inputValue.fmul(
             protocolFeeMultiplier,
             FixedPointMathLib.WAD
         );
         */
-        protocolFee = inputValue.mul(PROTOCOL_FEE);
+        protocolFee = inputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
+        // inputValue += protocolFee;
+        inputValue = protocolFee.add(protocolFee);
+
         newDelta = delta;
         console.log(newSpotPrice)
     }
     return {
-        inputValue, protocolFee, newDelta, protocolFee
+        inputValue, protocolFee, newDelta, protocolFee, newSpotPrice
     }
 }
 

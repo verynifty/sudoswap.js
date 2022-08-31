@@ -265,8 +265,10 @@ Pool.prototype.getTradesOut = async function () {
     //console.log("VOLUME", volume.toString())
     //console.log("FEE ", lpFees.toString())
     // console.log("======== TX")
-    console.log("INPUT", curveSimulation.inputValue.toString(), i.transactionHash, nfts.length);
-
+    console.log("BEFORE", spotPriceBefore.toString())
+    console.log("AFTER", spotPriceAfter.toString(), newSpotPrice.toString())
+    console.log("INPUT", curveSimulation.inputValue.toString(), i.transactionHash, nfts.length, );
+    console.log("PROTOCOL FEE", curveSimulation.protocolFee.toString())
     let t = {
       type: "NFT_OUT_POOL",
       transactionHash: i.transactionHash,
