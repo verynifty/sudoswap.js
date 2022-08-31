@@ -190,18 +190,40 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
     } else if (curve == 'LINEAR') {
         // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/LinearCurve.sol
 
-        // uint256 newSpotPrice_ = spotPrice + delta * numItems;
-        newSpotPrice = spotPrice.add(delta.mul(nbNfts));
+        // uint256 totalPriceDecrease = delta * numItems;
+        let totalPriceDecrease = delta.mul(nbNfts);
+
+        /*
+        if (spotPrice < totalPriceDecrease) {
+            // Then we set the new spot price to be 0. (Spot price is never negative)
+            newSpotPrice = 0;
+
+            // We calculate how many items we can sell into the linear curve until the spot price reaches 0, rounding up
+            uint256 numItemsTillZeroPrice = spotPrice / delta + 1;
+            numItems = numItemsTillZeroPrice;
+        } else {
+            // The new spot price is just the change between spot price and the total price change
+            newSpotPrice = spotPrice - uint128(totalPriceDecrease);
+        }
+        */
+       if (totalPriceDecrease.gte(spotPrice)) {
+        newSpotPrice = ethers.BigNumber.from(0);
+        numItemsTillZeroPrice = spotPrice.div(delta).add(1);
+        numItems = numItemsTillZeroPrice;
+       } else {
+        newSpotPrice = spotPrice.sub(totalPriceDecrease);
+       }
+
         // uint256 buySpotPrice = spotPrice + delta;
         buySpotPrice = spotPrice.add(delta);
         /* 
         inputValue =
             numItems *
-            buySpotPrice +
+            buySpotPrice -
             (numItems * (numItems - 1) * delta) /
             2;
         */
-        inputValue = nbNfts.mul(buySpotPrice).add(nbNfts.mul((nbNfts.sub(1)).mul(delta).div(2)))
+        inputValue = nbNfts.mul(buySpotPrice).sub(nbNfts.mul((nbNfts.sub(1)).mul(delta).div(2)))
 
         /*
         protocolFee = inputValue.fmul(
