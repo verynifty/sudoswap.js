@@ -13,6 +13,7 @@ const CURVES = {
 
 const PROTOCOL_FEE = ethers.BigNumber.from("5000000000000000");
 const PROTOCOL_FEE_DIVIDER = ethers.BigNumber.from("1000000000000000000")
+const ETHER = ethers.BigNumber.from("1000000000000000000")
 
 function CurveUtils(sudo) {
     this.sudo = sudo;
@@ -26,6 +27,7 @@ CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, 
 
     // make sure we deal with bignumbers
     fee = ethers.BigNumber.from(fee);
+    console.log(fee.toString())
     delta = ethers.BigNumber.from(delta);
     spotPrice = ethers.BigNumber.from(spotPrice);
     nbNfts = ethers.BigNumber.from(nbNfts);
@@ -33,7 +35,9 @@ CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, 
     let inputValue;
     let protocolFee;
     let newDelta;
+
     if (curve == 'EXPONENTIAL') {
+        // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
 
     } else if (curve == 'LINEAR') {
         // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/LinearCurve.sol
@@ -48,7 +52,8 @@ CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, 
             (numItems * (numItems - 1) * delta) /
             2;
         */
-        inputValue = nbNfts.mul(buySpotPrice).add(nbNfts.mul(nbNfts.sub(1).mul(delta).div(2)))
+        inputValue = nbNfts.mul(buySpotPrice).add(nbNfts.mul((nbNfts.sub(1)).mul(delta).div(2)))
+
         /*
         protocolFee = inputValue.fmul(
             protocolFeeMultiplier,
@@ -56,14 +61,19 @@ CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, 
         );
         */
         protocolFee = inputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
+
+        // inputValue += inputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
+        lpFee = inputValue.mul(fee).div(ETHER);
+        inputValue = inputValue.add(lpFee);
+
+
         // inputValue += protocolFee;
-        inputValue = protocolFee.add(protocolFee);
+        inputValue = inputValue.add(protocolFee);
 
         newDelta = delta;
-        console.log(newSpotPrice)
     }
     return {
-        inputValue, protocolFee, newDelta, protocolFee, newSpotPrice
+        inputValue, protocolFee, newDelta, lpFee, protocolFee, newSpotPrice
     }
 }
 
