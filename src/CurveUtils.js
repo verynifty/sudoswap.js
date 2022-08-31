@@ -70,7 +70,7 @@ CurveUtils.prototype.getBuyInfo = function (type, curve, fee, delta, spotPrice, 
         */
         inputValue = buySpotPrice.mul(
             (deltaPowN.sub(ETHER)).div(delta.sub(ETHER))
-        )
+        ).div(ETHER)
         /*
         protocolFee = inputValue.fmul(
               protocolFeeMultiplier,
