@@ -179,12 +179,12 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
               FixedPointMathLib.WAD
           );
           */
-        protocolFee = inputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
+        protocolFee = outputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
         // inputValue += inputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
         lpFee = inputValue.mul(fee).div(ETHER);
-        inputValue = inputValue.add(lpFee);
+        outputValue = outputValue.add(lpFee);
         // inputValue += protocolFee;
-        inputValue = inputValue.add(protocolFee);
+        outputValue = outputValue.add(protocolFee);
 
         newDelta = delta;
     } else if (curve == 'LINEAR') {
