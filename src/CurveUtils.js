@@ -209,14 +209,12 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         */
         if (totalPriceDecrease.gte(spotPrice)) {
             newSpotPrice = ethers.BigNumber.from(0);
-            numItemsTillZeroPrice = spotPrice.div(delta).add(1);
+            numItemsTillZeroPrice = (spotPrice.div(delta)).add(1);
             numItems = numItemsTillZeroPrice;
         } else {
             newSpotPrice = spotPrice.sub(totalPriceDecrease);
         }
 
-        // uint256 buySpotPrice = spotPrice + delta;
-        buySpotPrice = spotPrice.add(delta);
         /* 
         outputValue =
             numItems *
@@ -234,12 +232,12 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         */
         protocolFee = outputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
 
-        // outputValue += outputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
+        // outputValue -= outputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
         lpFee = outputValue.mul(fee).div(ETHER);
-        outputValue = outputValue.add(lpFee);
+        outputValue = outputValue.sub(lpFee);
 
-        // outputValue += protocolFee;
-        outputValue = outputValue.add(protocolFee);
+        // outputValue -= protocolFee;
+        outputValue = outputValue.sub(protocolFee);
 
         newDelta = delta;
     }
