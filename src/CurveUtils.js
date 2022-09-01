@@ -37,6 +37,7 @@ CurveUtils.prototype.getBuyInfo = function (curve, fee, delta, spotPrice, nbNfts
 
     if (curve == 'EXPONENTIAL') {
         // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
+        
         /*
         uint256 deltaPowN = uint256(delta).fpow(
             numItems,
@@ -136,6 +137,7 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
 
     if (curve == 'EXPONENTIAL') {
         // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
+
         /*
         uint256 invDelta = FixedPointMathLib.WAD.fdiv(
             delta,
@@ -235,7 +237,7 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         // outputValue -= outputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
         lpFee = outputValue.mul(fee).div(ETHER);
         outputValue = outputValue.sub(lpFee);
-
+    
         // outputValue -= protocolFee;
         outputValue = outputValue.sub(protocolFee);
 
