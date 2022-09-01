@@ -139,6 +139,12 @@ const tx = await router.swapNFTsForToken(
   deadline
 )
 
+// Approve the router to spend your nft if not already approved
+const tx = await router.approveCollection(nftAddress)
+
+// Check if the router was approved to spend your nft
+const isApprovedForRouter = await router.isApprovedForRouter(nftAddress)
+
 ```
 
 
@@ -146,7 +152,7 @@ const tx = await router.swapNFTsForToken(
 
 Enable simulating curve behaviour locally:
 
-```
+```javascript
 const curveUtils = sudo.getCurveUtils();
 
 curveUtils.getBuyInfo(curve, fee, delta, spotPrice, nbNfts) // returns: inputValue, protocolFee, newDelta, lpFee, protocolFee, newSpotPrice
