@@ -41,6 +41,7 @@ CurveUtils.prototype.getBuyInfo = function (
   let inputValue;
   let protocolFee;
   let newDelta;
+  let newSpotPrice;
 
   if (curve == "EXPONENTIAL") {
     // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
@@ -150,9 +151,10 @@ CurveUtils.prototype.getSellInfo = function (
   spotPrice = ethers.BigNumber.from(spotPrice);
   nbNfts = ethers.BigNumber.from(nbNfts);
 
-  let inputValue;
+  let outputValue;
   let protocolFee;
   let newDelta;
+  let newSpotPrice;
 
   if (curve == "EXPONENTIAL") {
     // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
