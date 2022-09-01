@@ -142,5 +142,19 @@ const tx = await router.swapNFTsForToken(
 ```
 
 
+### Curve Utils
+
+Enable simulating curve behaviour locally:
+
+```
+const curveUtils = sudo.getCurveUtils();
+
+curveUtils.getBuyInfo(curve, fee, delta, spotPrice, nbNfts) // returns: inputValue, protocolFee, newDelta, lpFee, protocolFee, newSpotPrice
+curveUtils.getSellInfo(curve, fee, delta, spotPrice, nbNfts) //returns: outputValue, protocolFee, newDelta, lpFee, protocolFee, newSpotPrice
+
+```
+
+
+
 
 
