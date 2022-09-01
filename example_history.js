@@ -12,7 +12,7 @@ const sudoswap = require("./src/Sudoswap.js");
     //                   GET POOL DATA
     // =============================================================
 
-    const pool = sudo.getPool("0xd2a6d0280ff48ccbcd654d5d0ecc45ef1e1cdbc3"); //initiate random pool based on chain id
+    const pool = sudo.getPool("0xb3041791fefe9284074713e4e14a6c4ddeeb57f9"); //initiate random pool based on chain id
 
     console.log(await pool.getCurve())
     let trades = await pool.getTrades();

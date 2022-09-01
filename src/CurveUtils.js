@@ -143,7 +143,8 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         );
         uint256 invDeltaPowN = invDelta.fpow(numItems, FixedPointMathLib.WAD);
         */
-        let invDelta = ETHER.div(delta);
+        let invDelta = (ETHER.mul(ETHER)).div(delta);
+        console.log("invDelta", invDelta.toString())
         let invDeltaPowN = invDelta.pow(nbNfts);
         /*
           uint256 newSpotPrice_ = uint256(spotPrice).fmul(
@@ -159,7 +160,7 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         );
         */
         newSpotPrice = newSpotPrice.mul(
-            (invDeltaPowN.sub(ETHER)).div(delta.sub(ETHER))
+            (invDeltaPowN)
         ).div(ETHER);
         /*
         outputValue = uint256(spotPrice).fmul(
@@ -170,13 +171,11 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
             FixedPointMathLib.WAD
         );
         */
-       console.log(invDelta.sub(ETHER))
-       console.log(ETHER.sub(invDelta))
-       console.log(invDelta.toString())
-       console.log((invDeltaPowN.sub(ETHER)).div(invDelta.sub(ETHER)).div(ETHER.sub(invDelta).toString()))
+        console.log(invDelta.toString())
+        console.log( (ETHER.sub(invDeltaPowN)).div(ETHER.sub(invDelta)).toString())
         outputValue = spotPrice.mul(
-            (invDeltaPowN.sub(ETHER)).div(invDelta.sub(ETHER)).div(ETHER.sub(invDelta))
-        ).div(ETHER);
+            (ETHER.sub(invDeltaPowN)).div(ETHER.sub(invDelta))
+        )
         /*
         protocolFee = inputValue.fmul(
               protocolFeeMultiplier,
@@ -184,11 +183,11 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
           );
           */
         protocolFee = outputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
-        // inputValue += inputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
+        // outputValue -= outputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
         lpFee = outputValue.mul(fee).div(ETHER);
-        outputValue = outputValue.add(lpFee);
-        // inputValue += protocolFee;
-        outputValue = outputValue.add(protocolFee);
+        outputValue = outputValue.sub(lpFee);
+        // outputValue -= protocolFee;
+        outputValue = outputValue.sub(protocolFee);
 
         newDelta = delta;
     } else if (curve == 'LINEAR') {
@@ -210,13 +209,13 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
             newSpotPrice = spotPrice - uint128(totalPriceDecrease);
         }
         */
-       if (totalPriceDecrease.gte(spotPrice)) {
-        newSpotPrice = ethers.BigNumber.from(0);
-        numItemsTillZeroPrice = spotPrice.div(delta).add(1);
-        numItems = numItemsTillZeroPrice;
-       } else {
-        newSpotPrice = spotPrice.sub(totalPriceDecrease);
-       }
+        if (totalPriceDecrease.gte(spotPrice)) {
+            newSpotPrice = ethers.BigNumber.from(0);
+            numItemsTillZeroPrice = spotPrice.div(delta).add(1);
+            numItems = numItemsTillZeroPrice;
+        } else {
+            newSpotPrice = spotPrice.sub(totalPriceDecrease);
+        }
 
         // uint256 buySpotPrice = spotPrice + delta;
         buySpotPrice = spotPrice.add(delta);
@@ -227,7 +226,7 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
             (numItems * (numItems - 1) * delta) /
             2;
         */
-            outputValue = nbNfts.mul(spotPrice).sub(nbNfts.mul((nbNfts.sub(1)).mul(delta).div(2)))
+        outputValue = nbNfts.mul(spotPrice).sub(nbNfts.mul((nbNfts.sub(1)).mul(delta).div(2)))
 
         /*
         protocolFee = outputValue.fmul(
