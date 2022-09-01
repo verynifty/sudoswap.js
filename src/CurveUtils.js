@@ -144,8 +144,8 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         uint256 invDeltaPowN = invDelta.fpow(numItems, FixedPointMathLib.WAD);
         */
         let invDelta = (ETHER.mul(ETHER)).div(delta);
-        console.log("invDelta", invDelta.toString())
         let invDeltaPowN = invDelta.pow(nbNfts);
+
         /*
           uint256 newSpotPrice_ = uint256(spotPrice).fmul(
             deltaPowN,
@@ -171,8 +171,6 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
             FixedPointMathLib.WAD
         );
         */
-        console.log(invDelta.toString())
-        console.log((ETHER.sub(invDeltaPowN)).div(ETHER.sub(invDelta)).toString())
         outputValue = spotPrice.mul(
             (ETHER.sub(invDeltaPowN)).div(ETHER.sub(invDelta))
         )
