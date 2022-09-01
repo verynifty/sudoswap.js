@@ -143,7 +143,7 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         );
         uint256 invDeltaPowN = invDelta.fpow(numItems, FixedPointMathLib.WAD);
         */
-        let invDelta = ETHER.div(nbNfts);
+        let invDelta = ETHER.div(delta);
         let invDeltaPowN = invDelta.pow(nbNfts);
         /*
           uint256 newSpotPrice_ = uint256(spotPrice).fmul(
@@ -184,7 +184,7 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
           */
         protocolFee = outputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
         // inputValue += inputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
-        lpFee = inputValue.mul(fee).div(ETHER);
+        lpFee = outputValue.mul(fee).div(ETHER);
         outputValue = outputValue.add(lpFee);
         // inputValue += protocolFee;
         outputValue = outputValue.add(protocolFee);
