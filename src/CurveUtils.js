@@ -171,7 +171,7 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         );
         */
         outputValue = spotPrice.mul(
-            (invDeltaPowN.sub(ETHER)).div(delta.sub(ETHER)).div(ETHER.sub(invDelta))
+            (invDeltaPowN.sub(ETHER)).div(invDelta.sub(ETHER)).div(ETHER.sub(invDelta))
         ).div(ETHER);
         /*
         protocolFee = inputValue.fmul(
