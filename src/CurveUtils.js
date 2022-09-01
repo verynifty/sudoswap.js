@@ -173,6 +173,7 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
        console.log(invDelta.sub(ETHER))
        console.log(ETHER.sub(invDelta))
        console.log(invDelta.toString())
+       console.log((invDeltaPowN.sub(ETHER)).div(invDelta.sub(ETHER)).div(ETHER.sub(invDelta).toString()))
         outputValue = spotPrice.mul(
             (invDeltaPowN.sub(ETHER)).div(invDelta.sub(ETHER)).div(ETHER.sub(invDelta))
         ).div(ETHER);
