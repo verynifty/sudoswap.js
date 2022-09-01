@@ -172,14 +172,14 @@ CurveUtils.prototype.getSellInfo = function (curve, fee, delta, spotPrice, nbNft
         );
         */
         console.log(invDelta.toString())
-        console.log( (ETHER.sub(invDeltaPowN)).div(ETHER.sub(invDelta)).toString())
+        console.log((ETHER.sub(invDeltaPowN)).div(ETHER.sub(invDelta)).toString())
         outputValue = spotPrice.mul(
             (ETHER.sub(invDeltaPowN)).div(ETHER.sub(invDelta))
         )
         /*
-        protocolFee = inputValue.fmul(
-              protocolFeeMultiplier,
-              FixedPointMathLib.WAD
+         protocolFee = outputValue.fmul(
+            protocolFeeMultiplier,
+            FixedPointMathLib.WAD
           );
           */
         protocolFee = outputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
