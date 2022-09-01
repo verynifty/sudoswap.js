@@ -1,6 +1,6 @@
 {
   "name": "@musedao/sudoswap.js",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "An unofficial library to make it easier to work with sudoswap in JS",
   "main": "src/Sudoswap.js",
   "scripts": {
