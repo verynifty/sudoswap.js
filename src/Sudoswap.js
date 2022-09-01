@@ -91,9 +91,10 @@ Sudoswap.prototype.getCurveUtils = function () {
 Sudoswap.prototype.formatDelta = function (val, type) {
   if (type == "linear") {
     return ethers.utils.parseUnits(val, "ether").toString();
-  } else {
+  } else if (type == "exponential") {
     // example val 0.05 = 5%
     return 1e18 + val * 1e17;
+  } else if (type == "xyk") {
   }
 };
 

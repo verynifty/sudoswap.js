@@ -4,10 +4,12 @@ const CURVES = {
   1: {
     "0x5B6aC51d9B1CeDE0068a1B26533CAce807f883Ee": "LINEAR",
     "0x432f962D8209781da23fB37b6B59ee15dE7d9841": "EXPONENTIAL",
+    "0x7942e264e21c5e6cbba45fe50785a15d3beb1da0": "XYK",
   },
   4: {
     "0x3764b9FE584719C4570725A2b5A2485d418A186E": "LINEAR",
     "0xBc6760B11e433D25aAf5c8fCBC6cE99b14aC5D52": "EXPONENTIAL",
+    "0x626f33fb4bc783049d465198468eee4d6b932f3a": "XYK",
   },
 };
 
@@ -124,6 +126,7 @@ CurveUtils.prototype.getBuyInfo = function (
     inputValue = inputValue.add(protocolFee);
 
     newDelta = delta;
+  } else if (curve == "XYK") {
   }
   return {
     inputValue,
@@ -258,7 +261,9 @@ CurveUtils.prototype.getSellInfo = function (
     outputValue = outputValue.sub(protocolFee);
 
     newDelta = delta;
+  } else if (curve == "XYK") {
   }
+
   return {
     outputValue,
     newDelta,
