@@ -33,6 +33,9 @@ CurveUtils.prototype.getBuyInfo = function (
   nbNfts
 ) {
   // make sure we deal with bignumbers
+  if (typeof delta == 'number') {
+    delta += "";
+  }
   fee = ethers.BigNumber.from(fee);
   delta = ethers.BigNumber.from(delta);
   spotPrice = ethers.BigNumber.from(spotPrice);
@@ -145,6 +148,9 @@ CurveUtils.prototype.getSellInfo = function (
   spotPrice,
   nbNfts
 ) {
+  if (typeof delta == 'number') {
+    delta += "";
+  }
   // make sure we deal with bignumbers
   fee = ethers.BigNumber.from(fee);
   delta = ethers.BigNumber.from(delta);
