@@ -116,7 +116,7 @@ CurveUtils.prototype.getBuyInfo = function (
             protocolFeeMultiplier,
             FixedPointMathLib.WAD
         );
-        */
+    */
     protocolFee = inputValue.mul(PROTOCOL_FEE).div(PROTOCOL_FEE_DIVIDER);
 
     // inputValue += inputValue.fmul(feeMultiplier, FixedPointMathLib.WAD);
