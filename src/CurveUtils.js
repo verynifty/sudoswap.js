@@ -43,7 +43,7 @@ CurveUtils.prototype.getBuyInfo = function (
   let newDelta;
   let newSpotPrice;
 
-  if (curve == "EXPONENTIAL") {
+  if (curve.toUpperCase() == "EXPONENTIAL") {
     // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
 
     /*
@@ -93,7 +93,7 @@ CurveUtils.prototype.getBuyInfo = function (
     inputValue = inputValue.add(protocolFee);
 
     newDelta = delta;
-  } else if (curve == "LINEAR") {
+  } else if (curve.toUpperCase() == "LINEAR") {
     // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/LinearCurve.sol
 
     // uint256 newSpotPrice_ = spotPrice + delta * numItems;
@@ -127,7 +127,7 @@ CurveUtils.prototype.getBuyInfo = function (
     inputValue = inputValue.add(protocolFee);
 
     newDelta = delta;
-  } else if (curve == "XYK") {
+  } else if (curve.toUpperCase() == "XYK") {
   }
   return {
     inputValue,
@@ -156,7 +156,7 @@ CurveUtils.prototype.getSellInfo = function (
   let newDelta;
   let newSpotPrice;
 
-  if (curve == "EXPONENTIAL") {
+  if (curve.toUpperCase() == "EXPONENTIAL") {
     // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
 
     /*
@@ -209,7 +209,7 @@ CurveUtils.prototype.getSellInfo = function (
     outputValue = outputValue.sub(protocolFee);
 
     newDelta = delta;
-  } else if (curve == "LINEAR") {
+  } else if (curve.toUpperCase() == "LINEAR") {
     // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/LinearCurve.sol
 
     // uint256 totalPriceDecrease = delta * numItems;
@@ -263,7 +263,7 @@ CurveUtils.prototype.getSellInfo = function (
     outputValue = outputValue.sub(protocolFee);
 
     newDelta = delta;
-  } else if (curve == "XYK") {
+  } else if (curve.toUpperCase() == "XYK") {
   }
 
   return {
