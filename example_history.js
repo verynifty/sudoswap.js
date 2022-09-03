@@ -15,11 +15,11 @@ const { ethers } = require("ethers");
 
     let curveUtils = sudo.getCurveUtils()
 
-    let fee = sudo.formatFee("1");
-    let delta = sudo.formatDelta("0.1", "linear");
+    let fee = sudo.formatFee("0.01");
+    let delta = sudo.formatDelta("0.1", "exponential");
     spotPrice = "1000000000000000000"
     for (let index = 0; index < 10; index++) {
-      let i = curveUtils.getBuyInfo("LINEAR", fee, delta, spotPrice, 1)
+      let i = curveUtils.getBuyInfo("EXPONENTIAL", fee, delta, spotPrice, 1)
       spotPrice = i.newSpotPrice;
       console.log(i.inputValue.toString(), i.newSpotPrice.toString())
     }
