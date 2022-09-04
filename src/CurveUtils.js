@@ -55,7 +55,7 @@ CurveUtils.prototype.getBuyInfo = function (
             FixedPointMathLib.WAD
         );
         */
-    let deltaPowN = delta.pow(nbNfts).div(ETHER.pow(nbNfts));
+    let deltaPowN = delta.pow(nbNfts).div(ETHER.pow(nbNfts - 1));
     console.log(" ===  > deltapow ", ethers.utils.formatEther(deltaPowN))
     /*
           uint256 newSpotPrice_ = uint256(spotPrice).fmul(
@@ -63,7 +63,7 @@ CurveUtils.prototype.getBuyInfo = function (
             FixedPointMathLib.WAD
         );
         */
-    newSpotPrice = spotPrice.mul(deltaPowN);
+    newSpotPrice = spotPrice.mul(deltaPowN).div(ETHER);
     console.log(" ===  > NEWPSOO ", ethers.utils.formatEther(newSpotPrice))
     /*
         uint256 buySpotPrice = uint256(spotPrice).fmul(
@@ -175,7 +175,7 @@ CurveUtils.prototype.getSellInfo = function (
         uint256 invDeltaPowN = invDelta.fpow(numItems, FixedPointMathLib.WAD);
         */
     let invDelta = ETHER.mul(ETHER).div(delta);
-    let invDeltaPowN = invDelta.pow(nbNfts);
+    let invDeltaPowN = invDelta.pow(nbNfts).div(ETHER.pow(nbNfts - 1));
 
     /*
           uint256 newSpotPrice_ = uint256(spotPrice).fmul(
