@@ -88,6 +88,10 @@ Sudoswap.prototype.getCurveUtils = function () {
   return this.curveUtils;
 };
 
+Sudoswap.prototype.getEthers = function () {
+  return ethers;
+}
+
 Sudoswap.prototype.formatDelta = function (val, type) {
   if (type.toUpperCase() == "LINEAR") {
     return ethers.utils.parseUnits(val, "ether").toString();
