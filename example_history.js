@@ -17,11 +17,15 @@ const { ethers } = require("ethers");
 
     let fee = sudo.formatFee("0.01");
     let delta = sudo.formatDelta("0.005", "exponential");
+
+    console.log("Fee:", ethers.utils.formatEther(fee + ""))
+    console.log("Delta:", ethers.utils.formatEther(delta + ""))
     spotPrice = "1000000000000000000"
     for (let index = 0; index < 10; index++) {
       let i = curveUtils.getBuyInfo("EXPONENTIAL", fee, delta, spotPrice, 1)
       spotPrice = i.newSpotPrice;
-      console.log(i.inputValue.toString(), i.newSpotPrice.toString())
+     // console.log(i)
+      console.log(ethers.utils.formatEther(i.inputValue), ethers.utils.formatEther(i.newSpotPrice))
     }
     return;
     const pool = sudo.getPool("0x5caf332dca4e6c9e69d52f320c21e74845353db0"); //initiate random pool based on chain id
