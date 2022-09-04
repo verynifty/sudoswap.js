@@ -259,16 +259,16 @@ Pool.prototype.getTradesOut = async function () {
       .map(function (t) {
         return t.args.tokenId.toString();
       });
-
+      console.log("CURVE PARAMS:::: ", curveType, ethers.utils.formatEther(fee), ethers.utils.formatEther(delta), ethers.utils.formatEther(spotPriceBefore), nfts.length)
     let curveSimulation = await this.sudo.getCurveUtils().getBuyInfo(curveType, fee, delta, spotPriceBefore, nfts.length)
-      console.log("BUY")
+      //console.log("BUY")
      console.log(i.transactionHash)
     // console.log("VOLUME", volume.toString())
     // console.log("FEE ", lpFees.toString())
-    // console.log("======== TX")
-    // console.log("BEFORE", spotPriceBefore.toString())
-    // console.log("AFTER", spotPriceAfter.toString(), newSpotPrice.toString())
-     console.log("INPUT", curveSimulation.inputValue.toString(), nfts.length,);
+     console.log("======== TX")
+     console.log("BEFORE", ethers.utils.formatEther(spotPriceBefore))
+     console.log("AFTER", ethers.utils.formatEther(spotPriceAfter), ethers.utils.formatEther(curveSimulation.newSpotPrice))
+     console.log("INPUT", ethers.utils.formatEther(curveSimulation.inputValue), nfts.length,);
     // console.log("PROTOCOL FEE", curveSimulation.protocolFee.toString())
     let t = {
       type: "NFT_OUT_POOL",

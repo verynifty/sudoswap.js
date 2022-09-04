@@ -9,10 +9,17 @@ const { ethers } = require("ethers");
       `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY}`,
     );
 
+
+    const pool = sudo.getPool("0x58a474582ae4547caee0b6ddb9fa0f91bddaabf8"); //initiate random pool based on chain id
+
+    console.log(await pool.getCurve())
+    let trades = await pool.getTradesOut();
+    return
+
     // =============================================================
     //                   GET POOL DATA
     // =============================================================
-
+/*
     let curveUtils = sudo.getCurveUtils()
 
     let fee = sudo.formatFee("0.01");
@@ -33,7 +40,7 @@ const { ethers } = require("ethers");
     console.log(await pool.getCurve())
     let trades = await pool.getTrades();
     console.log(trades);
-
+*/
   } catch (e) {
     console.log(e);
   }
