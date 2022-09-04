@@ -51,6 +51,7 @@ CurveUtils.prototype.getBuyInfo = function (
   let newDelta;
   let newSpotPrice;
   let buySpotPrice;
+  let lpFee;
 
   if (curve.toUpperCase() == "EXPONENTIAL") {
     // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
@@ -170,6 +171,7 @@ CurveUtils.prototype.getSellInfo = function (
   let newDelta;
   let newSpotPrice;
   let numItemsTillZeroPrice;
+  let lpFee;
 
   if (curve.toUpperCase() == "EXPONENTIAL") {
     // https://github.com/sudoswap/lssvm/blob/main/src/bonding-curves/ExponentialCurve.sol
