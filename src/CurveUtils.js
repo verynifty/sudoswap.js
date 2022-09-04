@@ -32,6 +32,11 @@ CurveUtils.prototype.getBuyInfo = function (
   spotPrice,
   nbNfts
 ) {
+  console.log("params", {curve,
+    fee,
+    delta,
+    spotPrice,
+    nbNfts})
   // make sure we deal with bignumbers
   if (typeof delta == 'number') {
     delta += "";
