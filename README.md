@@ -146,8 +146,8 @@ Utilitiy functions to make it easier simulating behaviour.
 ```javascript
 const utils = sudo.utils;
 
-utils.getBuyInfo(curve, fee, delta, spotPrice, nbNfts) // returns: inputValue, newDelta, lpFee, protocolFee, newSpotPrice
-utils.getSellInfo(curve, fee, delta, spotPrice, nbNfts) //returns: outputValue, newDelta, lpFee, protocolFee, newSpotPrice
+utils.getBuyInfo(curve, fee, delta, spotPrice, nbNfts) // simulates curve. returns: inputValue, newDelta, lpFee, protocolFee, newSpotPrice
+utils.getSellInfo(curve, fee, delta, spotPrice, nbNfts) //simulates curve returns: outputValue, newDelta, lpFee, protocolFee, newSpotPrice
 utils.formatDelta("0.05", "exponential") // returns correct format for a 5% exponential curve.
 utils.formatFee("0.05") // returns correct format for a 5% fee.
 
