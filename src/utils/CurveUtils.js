@@ -17,23 +17,13 @@ const PROTOCOL_FEE = ethers.BigNumber.from("5000000000000000");
 const PROTOCOL_FEE_DIVIDER = ethers.BigNumber.from("1000000000000000000");
 const ETHER = ethers.BigNumber.from("1000000000000000000");
 
-function CurveUtils(sudo) {
-  this.sudo = sudo;
-}
-
-CurveUtils.prototype.addressToCurveType = function (network, address) {
+exports.addressToCurveType = function (network, address) {
   return CURVES[network][address];
 };
 
-CurveUtils.prototype.getBuyInfo = function (
-  curve,
-  fee,
-  delta,
-  spotPrice,
-  nbNfts
-) {
+exports.getBuyInfo = function (curve, fee, delta, spotPrice, nbNfts) {
   // make sure we deal with bignumbers
-  if (typeof delta == 'number') {
+  if (typeof delta == "number") {
     delta += "";
   }
   fee = ethers.BigNumber.from(fee);
@@ -145,14 +135,8 @@ CurveUtils.prototype.getBuyInfo = function (
   };
 };
 
-CurveUtils.prototype.getSellInfo = function (
-  curve,
-  fee,
-  delta,
-  spotPrice,
-  nbNfts
-) {
-  if (typeof delta == 'number') {
+exports.getSellInfo = function (curve, fee, delta, spotPrice, nbNfts) {
+  if (typeof delta == "number") {
     delta += "";
   }
   // make sure we deal with bignumbers
@@ -286,5 +270,3 @@ CurveUtils.prototype.getSellInfo = function (
     newSpotPrice,
   };
 };
-
-module.exports = CurveUtils;

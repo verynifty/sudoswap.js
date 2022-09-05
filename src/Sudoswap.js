@@ -1,6 +1,6 @@
 const { ethers } = require("ethers");
 const moize = require("moize");
-const CurveUtils = require("./CurveUtils");
+const Utils = require("./Utils");
 
 const Pool = require("./Pool");
 const Router = require("./Router");
@@ -23,7 +23,7 @@ function Sudoswap(web3Provider, pKey = null) {
     this.isWeb3Provider = true;
   }
 
-  this.curveUtils = new CurveUtils(this);
+  this.utils = new Utils();
 
   // pass pkey for buy and sell functionality
   if (pKey) {
@@ -84,31 +84,8 @@ Sudoswap.prototype.router = async function () {
   return new Router(this, chainId);
 };
 
-Sudoswap.prototype.getCurveUtils = function () {
-  return this.curveUtils;
-};
-
 Sudoswap.prototype.getEthers = function () {
   return ethers;
-}
-
-Sudoswap.prototype.formatDelta = function (val, type) {
-  if (type.toUpperCase() == "LINEAR") {
-    return ethers.utils.parseUnits(val, "ether").toString();
-  } else if (type.toUpperCase() == "EXPONENTIAL") {
-    // example val 0.05 = 5%
-    // This is more safe for type
-    return ethers.utils.parseUnits("1", "ether").add(ethers.utils.parseUnits(val, "ether").div(100)).toString();
-    // return 1e18 + val * 1e17;
-  } else if (type.toUpperCase() == "XYK") {
-    return;
-  }
-  throw 'Uknown curve'
-};
-
-Sudoswap.prototype.formatFee = function (val) {
-  //example val 0.05 = 5%
-  return ethers.utils.parseUnits(val, "ether").toString();
 };
 
 module.exports = Sudoswap;

@@ -33,15 +33,6 @@ const pool = sudo.getPool("0x6210e6229aec95d17f57dab93e042013d7d3603c"); //any s
 const router = sudo.router(); //use the router
 
 ```
-
-## Sudo
-
-```javascript
-sudo.formatDelta("0.05", "exponential") // returns correct format for a 5% exponential curve.
-sudo.formatFee("0.05") // returns correct format for a 5% fee.
-
-```
-
 ## Pool
 
 ### Getters
@@ -148,15 +139,17 @@ const isApprovedForRouter = await router.isApprovedForRouter(nftAddress)
 ```
 
 
-### Curve Utils
+### Utils
 
-Enable simulating curve behaviour locally:
+Utilitiy functions to make it easier simulating behaviour.
 
 ```javascript
-const curveUtils = sudo.getCurveUtils();
+const utils = sudo.utils;
 
-curveUtils.getBuyInfo(curve, fee, delta, spotPrice, nbNfts) // returns: inputValue, newDelta, lpFee, protocolFee, newSpotPrice
-curveUtils.getSellInfo(curve, fee, delta, spotPrice, nbNfts) //returns: outputValue, newDelta, lpFee, protocolFee, newSpotPrice
+utils.getBuyInfo(curve, fee, delta, spotPrice, nbNfts) // returns: inputValue, newDelta, lpFee, protocolFee, newSpotPrice
+utils.getSellInfo(curve, fee, delta, spotPrice, nbNfts) //returns: outputValue, newDelta, lpFee, protocolFee, newSpotPrice
+utils.formatDelta("0.05", "exponential") // returns correct format for a 5% exponential curve.
+utils.formatFee("0.05") // returns correct format for a 5% fee.
 
 ```
 

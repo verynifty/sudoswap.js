@@ -46,10 +46,10 @@ const POOLS = {
     //                   TEST HELPERS
     // =============================================================
 
-    let formatDelta = sudo.formatDelta("0.05", "exponential");
+    let formatDelta = sudo.utils.formatDelta("0.05", "exponential");
     console.log(formatDelta);
 
-    let formatFee = sudo.formatFee("0.05", "exponential");
+    let formatFee = sudo.utils.formatFee("0.05", "exponential");
     console.log(formatFee);
 
     // =============================================================

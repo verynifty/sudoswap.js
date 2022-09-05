@@ -29,7 +29,10 @@ Pool.prototype.getCurve = async function () {
   if (this.curve != null) {
     return this.curve;
   }
-  this.curve = this.sudo.getCurveUtils().addressToCurveType(await this.sudo.getNetwork(), await this.contract.bondingCurve());
+  this.curve = this.sudo.utils.addressToCurveType(
+    await this.sudo.getNetwork(),
+    await this.contract.bondingCurve()
+  );
   return this.curve;
 };
 
@@ -116,8 +119,8 @@ Pool.prototype.getBuyNFTQuote = async function (nbNFT) {
 
 Pool.prototype.getTradesIn = async function () {
   let trades = [];
-  
-  let fee = "0"
+
+  let fee = "0";
   let type = await this.getType();
   if (type == "TRADE") {
     fee = await this.getFee();
@@ -173,8 +176,14 @@ Pool.prototype.getTradesIn = async function () {
       .map(function (t) {
         return t.args.tokenId.toString();
       });
-      let curveSimulation = await this.sudo.getCurveUtils().getSellInfo(curveType, fee, delta, spotPriceBefore, nfts.length)
-      /*console.log("SELL")
+    let curveSimulation = await this.sudo.utils.getSellInfo(
+      curveType,
+      fee,
+      delta,
+      spotPriceBefore,
+      nfts.length
+    );
+    /*console.log("SELL")
      console.log(i.transactionHash)
      console.log("INPUT", curveSimulation.outputValue.toString(), nfts.length,);*/
 
@@ -199,8 +208,7 @@ Pool.prototype.getTradesIn = async function () {
 };
 
 Pool.prototype.getTradesOut = async function () {
-
-  let fee = "0"
+  let fee = "0";
   let type = await this.getType();
   if (type == "TRADE") {
     fee = await this.getFee();
@@ -245,7 +253,6 @@ Pool.prototype.getTradesOut = async function () {
         ? spotPriceAfter[0].args.newSpotPrice
         : await this.getSpotPrice();
 
-
     // let tx = await this.sudo.getTransaction(i.transactionHash);
     let b = await this.sudo.getBlock(i.blockNumber);
     let buyer = "";
@@ -259,9 +266,15 @@ Pool.prototype.getTradesOut = async function () {
       .map(function (t) {
         return t.args.tokenId.toString();
       });
-      //console.log("CURVE PARAMS:::: ", curveType, ethers.utils.formatEther(fee), ethers.utils.formatEther(delta), ethers.utils.formatEther(spotPriceBefore), nfts.length)
-    let curveSimulation = await this.sudo.getCurveUtils().getBuyInfo(curveType, fee, delta, spotPriceBefore, nfts.length)
-     /* console.log("BUY")
+    //console.log("CURVE PARAMS:::: ", curveType, ethers.utils.formatEther(fee), ethers.utils.formatEther(delta), ethers.utils.formatEther(spotPriceBefore), nfts.length)
+    let curveSimulation = await this.sudo.utils.getBuyInfo(
+      curveType,
+      fee,
+      delta,
+      spotPriceBefore,
+      nfts.length
+    );
+    /* console.log("BUY")
      console.log(i.transactionHash)
     console.log("VOLUME", volume.toString())
      console.log("FEE ", lpFees.toString())
