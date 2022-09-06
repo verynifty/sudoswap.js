@@ -15,6 +15,20 @@ const { ethers } = require("ethers");
 
     let utils = sudo.utils;
 
+    const pool = sudo.getPool("0x5caf332dca4e6c9e69d52f320c21e74845353db0"); //initiate random pool based on chain id
+
+    console.log(await pool.getCurve());
+    let trades = await pool.getTrades();
+    console.log(trades);
+
+    /*
+
+        const pool = sudo.getPool("0xb3041791fefe9284074713e4e14a6c4ddeeb57f9"); //initiate random pool based on chain id
+
+    console.log(await pool.getCurve())
+    let trades = await pool.getTradesOut();
+
+
     console.log("utils ", utils);
 
     let fee = utils.formatFee("0.01");
@@ -33,20 +47,6 @@ const { ethers } = require("ethers");
         ethers.utils.formatEther(i.newSpotPrice)
       );
     }
-    return;
-    const pool = sudo.getPool("0x5caf332dca4e6c9e69d52f320c21e74845353db0"); //initiate random pool based on chain id
-
-    console.log(await pool.getCurve());
-    let trades = await pool.getTrades();
-    console.log(trades);
-
-    /*
-
-        const pool = sudo.getPool("0xb3041791fefe9284074713e4e14a6c4ddeeb57f9"); //initiate random pool based on chain id
-
-    console.log(await pool.getCurve())
-    let trades = await pool.getTradesOut();
-    return
 */
   } catch (e) {
     console.log(e);

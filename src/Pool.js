@@ -188,6 +188,7 @@ Pool.prototype.getTradesIn = async function () {
      console.log("INPUT", curveSimulation.outputValue.toString(), nfts.length,);*/
 
     //console.log("======== TX")
+    //console.log(curveSimulation)
     let t = {
       type: "NFT_IN_POOL",
       transactionHash: i.transactionHash,
@@ -195,6 +196,9 @@ Pool.prototype.getTradesIn = async function () {
       nfts: nfts,
       nbNfts: nfts.length,
       buyer: buyer,
+      lpFee: curveSimulation.lpFee.toString(),
+      protocolFee: curveSimulation.protocolFee.toString(),
+      outputValue: curveSimulation.outputValue.toString(),
       priceBefore: spotPriceBefore.toString(),
       priceAfter: spotPriceAfter.toString(),
       timestamp: b.timestamp,
