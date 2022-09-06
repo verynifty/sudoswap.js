@@ -199,6 +199,7 @@ Pool.prototype.getTradesIn = async function () {
       lpFee: curveSimulation.lpFee.toString(),
       protocolFee: curveSimulation.protocolFee.toString(),
       outputValue: curveSimulation.outputValue.toString(),
+      pricePerNft: curveSimulation.outputValue.div(nfts.length).toString(),
       priceBefore: spotPriceBefore.toString(),
       priceAfter: spotPriceAfter.toString(),
       timestamp: b.timestamp,
@@ -294,13 +295,17 @@ Pool.prototype.getTradesOut = async function () {
       nfts: nfts,
       nbNfts: nfts.length,
       buyer: buyer,
+      lpFee: curveSimulation.lpFee.toString(),
+      protocolFee: curveSimulation.protocolFee.toString(),
+      inputValue: curveSimulation.inputValue.toString(),
+      pricePerNft: curveSimulation.inputValue.div(nfts.length).toString(),
       priceBefore: spotPriceBefore.toString(),
       priceAfter: spotPriceAfter.toString(),
       timestamp: b.timestamp,
       pool: this.address,
       logIndex: i.logIndex,
     };
-    // console.log(t)
+     console.log(t)
     trades.push(t);
   }
   return trades;
