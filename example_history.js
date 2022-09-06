@@ -13,6 +13,8 @@ const { ethers } = require("ethers");
     //                   GET POOL DATA
     // =============================================================
 
+    let archive = await sudo.hasNodeArchiveCapabilities()
+    console.log(archive)
     let utils = sudo.utils;
 
     const pool = sudo.getPool("0x451018623f2ea29a625ac5e051720eeac2b0e765"); //initiate random pool based on chain id

@@ -10,7 +10,7 @@ const TRANSACTION_CACHE_SIZE = 100;
 
 function Sudoswap(web3Provider, pKey = null) {
   this.connectedAddress = null;
-
+  this.isArchive = "UNKNOWN"
   this.isWeb3Provider = false;
   if (typeof web3Provider == "string") {
     if (web3Provider.startsWith("http")) {
@@ -51,6 +51,21 @@ function Sudoswap(web3Provider, pKey = null) {
     maxSize: TRANSACTION_CACHE_SIZE,
     maxArgs: 1,
   });
+}
+
+Sudoswap.prototype.hasNodeArchiveCapabilities = async function () {
+  if (this.isArchive == "UNKNOWN") {
+    this.isArchive = false;
+    try {
+      let testResult = await this.provider.getBalance("0xe5Fb31A5CaEE6a96de393bdBF89FBe65fe125Bb3", 1);
+      if (testResult.toString() == "1000000000000000000000") {
+        this.isArchive = true;
+      }
+    } catch (error) {
+      // console.log(error)
+    }
+  }
+  return this.isArchive;
 }
 
 Sudoswap.prototype.getSigner = async function () {
