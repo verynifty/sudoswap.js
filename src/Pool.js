@@ -63,16 +63,20 @@ Pool.prototype.getSpotPrice = async function () {
   return spotPrice;
 };
 
-Pool.prototype.getFee = async function () {
-  if (this.fee != null) {
+Pool.prototype.getFee = async function (blockNumber = "latest") {
+  /*
+  if (this.fee != null ) {
     return this.fee;
   }
-  this.fee = await this.contract.fee();
+  */
+  console.log("GETFEE", blockNumber)
+  this.fee = await this.contract.fee({ blockTag: blockNumber });
+  console.log(this.fee.toString())
   return this.fee;
 };
 
-Pool.prototype.getDelta = async function () {
-  return await this.contract.delta();
+Pool.prototype.getDelta = async function (blockNumber = "latest") {
+  return await this.contract.delta({ blockTag: blockNumber });
 };
 
 Pool.prototype.getAssetRecipient = async function () {
@@ -120,17 +124,14 @@ Pool.prototype.getBuyNFTQuote = async function (nbNFT) {
 Pool.prototype.getTradesIn = async function () {
   let trades = [];
 
-  let fee = "0";
-  let type = await this.getType();
-  if (type == "TRADE") {
-    fee = await this.getFee();
-  }
-
   let curveType = await this.getCurve();
-  let delta = await this.getDelta();
 
   let infilter = this.contract.filters.SwapNFTInPair();
   let inevents = await this.contract.queryFilter(infilter);
+
+  if (inevents.length == 0) {
+    return [];
+  }
 
   let spotfilter = this.contract.filters.SpotPriceUpdate();
   let spotPrices = await this.contract.queryFilter(spotfilter);
@@ -145,11 +146,18 @@ Pool.prototype.getTradesIn = async function () {
   let intransfersfilter = nft.filters.Transfer(null, this.address);
   let intransfers = await nft.queryFilter(intransfersfilter);
 
+  let fee = "0";
+  let type = await this.getType();
+  if (type == "TRADE") {
+    fee = await this.getFee(feeUpdates.length > 0 ? inevents[0].blockNumber : "latest");
+  }
+  let delta = await this.getDelta(deltaUpdates.length > 0 ? inevents.blockNumber : "latest");
+
   for (const i of inevents) {
 
     let currentDelta = deltaUpdates.filter(function (u) {
       return (
-        u.blockNumber <= i.blockNumber || 
+        u.blockNumber <= i.blockNumber ||
         u.blockNumber <= i.blockNumber && u.logIndex < i.logIndex
       )
     })
@@ -161,7 +169,7 @@ Pool.prototype.getTradesIn = async function () {
 
     let currentFee = feeUpdates.filter(function (f) {
       return (
-        f.blockNumber <= i.blockNumber || 
+        f.blockNumber <= i.blockNumber ||
         f.blockNumber <= i.blockNumber && f.logIndex < i.logIndex
       )
     })
@@ -220,7 +228,7 @@ Pool.prototype.getTradesIn = async function () {
       nbNfts: nfts.length,
       buyer: buyer,
       fee: currentFee.toString(),
-      delta: delta.toString(),
+      delta: currentDelta.toString(),
       lpFee: curveSimulation.lpFee.toString(),
       protocolFee: curveSimulation.protocolFee.toString(),
       outputValue: curveSimulation.outputValue.toString(),
@@ -238,19 +246,16 @@ Pool.prototype.getTradesIn = async function () {
 };
 
 Pool.prototype.getTradesOut = async function () {
-  let fee = "0";
-  let type = await this.getType();
-  if (type == "TRADE") {
-    fee = await this.getFee();
-  }
-
   let trades = [];
 
   let curveType = await this.getCurve();
-  let delta = await this.getDelta();
 
   let outfilter = this.contract.filters.SwapNFTOutPair();
   let outevents = await this.contract.queryFilter(outfilter);
+
+  if (outevents.length == 0) {
+    return [];
+  }
 
   let spotfilter = this.contract.filters.SpotPriceUpdate();
   let spotPrices = await this.contract.queryFilter(spotfilter);
@@ -265,11 +270,18 @@ Pool.prototype.getTradesOut = async function () {
   let intransfersfilter = nft.filters.Transfer(this.address, null);
   let intransfers = await nft.queryFilter(intransfersfilter);
 
+  let fee = "0";
+  let type = await this.getType();
+  if (type == "TRADE") {
+    fee = await this.getFee(feeUpdates.length > 0 ? outevents[0].blockNumber : "latest");
+  }
+  let delta = await this.getDelta(deltaUpdates.length > 0 ? outevents[0].blockNumber : "latest");
+
   for (const i of outevents) {
 
     let currentDelta = deltaUpdates.filter(function (u) {
       return (
-        u.blockNumber <= i.blockNumber || 
+        u.blockNumber <= i.blockNumber ||
         u.blockNumber <= i.blockNumber && u.logIndex < i.logIndex
       )
     })
@@ -281,7 +293,7 @@ Pool.prototype.getTradesOut = async function () {
 
     let currentFee = feeUpdates.filter(function (f) {
       return (
-        f.blockNumber <= i.blockNumber || 
+        f.blockNumber <= i.blockNumber ||
         f.blockNumber <= i.blockNumber && f.logIndex < i.logIndex
       )
     })
@@ -342,7 +354,7 @@ Pool.prototype.getTradesOut = async function () {
       nbNfts: nfts.length,
       buyer: buyer,
       fee: currentFee.toString(),
-      delta: delta.toString(),
+      delta: currentDelta.toString(),
       lpFee: curveSimulation.lpFee.toString(),
       protocolFee: curveSimulation.protocolFee.toString(),
       inputValue: curveSimulation.inputValue.toString(),
@@ -353,11 +365,10 @@ Pool.prototype.getTradesOut = async function () {
       pool: this.address,
       logIndex: i.logIndex,
     };
-    // console.log(t)
+    console.log(t)
     trades.push(t);
   }
   return trades;
-  //console.log(outtransfers)
 };
 
 Pool.prototype.getTrades = async function () {
