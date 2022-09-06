@@ -236,7 +236,7 @@ Pool.prototype.getTradesIn = async function () {
       timestamp: b.timestamp,
       pool: this.address,
     };
-    console.log(t)
+    // console.log(t)
     trades.push(t);
   }
   return trades;
@@ -363,7 +363,7 @@ Pool.prototype.getTradesOut = async function () {
       pool: this.address,
       logIndex: i.logIndex,
     };
-    console.log(t)
+    // console.log(t)
     trades.push(t);
   }
   return trades;
