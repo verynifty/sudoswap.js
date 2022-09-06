@@ -58,8 +58,8 @@ Pool.prototype.getAllHeldIds = async function () {
   return heldIds.map((i) => i.toString());
 };
 
-Pool.prototype.getSpotPrice = async function () {
-  let spotPrice = await this.contract.spotPrice();
+Pool.prototype.getSpotPrice = async function (blockNumber = "latest") {
+  let spotPrice = await this.contract.spotPrice({ blockTag: blockNumber });
   return spotPrice;
 };
 
@@ -69,9 +69,7 @@ Pool.prototype.getFee = async function (blockNumber = "latest") {
     return this.fee;
   }
   */
-  console.log("GETFEE", blockNumber)
   this.fee = await this.contract.fee({ blockTag: blockNumber });
-  console.log(this.fee.toString())
   return this.fee;
 };
 
@@ -190,7 +188,7 @@ Pool.prototype.getTradesIn = async function () {
     spotPriceBefore =
       spotPriceBefore.length > 0
         ? spotPriceBefore[spotPriceBefore.length - 1].args.newSpotPrice
-        : await this.getSpotPrice();
+        : await this.getSpotPrice(i.blockNumber - 1);
 
     // we get the spot Price after the swapIn event
     let spotPriceAfter = spotPrices.filter(function (p) {
@@ -199,7 +197,7 @@ Pool.prototype.getTradesIn = async function () {
     spotPriceAfter =
       spotPriceAfter.length > 0
         ? spotPriceAfter[0].args.newSpotPrice
-        : await this.getSpotPrice();
+        : await this.getSpotPrice(i.blockNumber);
 
     let b = await this.sudo.getBlock(i.blockNumber);
     let buyer = "";
@@ -314,7 +312,7 @@ Pool.prototype.getTradesOut = async function () {
     spotPriceBefore =
       spotPriceBefore.length > 0
         ? spotPriceBefore[spotPriceBefore.length - 1].args.newSpotPrice
-        : await this.getSpotPrice();
+        : await this.getSpotPrice(i.blockNumber - 1);
 
     // we get the spot Price after the swapIn event
     let spotPriceAfter = spotPrices.filter(function (p) {
@@ -324,7 +322,7 @@ Pool.prototype.getTradesOut = async function () {
     spotPriceAfter =
       spotPriceAfter.length > 0
         ? spotPriceAfter[0].args.newSpotPrice
-        : await this.getSpotPrice();
+        : await this.getSpotPrice(i.blockNumber);
 
     // let tx = await this.sudo.getTransaction(i.transactionHash);
     let b = await this.sudo.getBlock(i.blockNumber);
