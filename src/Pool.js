@@ -157,13 +157,11 @@ Pool.prototype.getTradesIn = async function () {
     let spotPriceAfter = spotPrices.filter(function (p) {
       return p.transactionHash == i.transactionHash && p.logIndex < i.logIndex;
     });
-    //console.log("price after == ", spotPriceAfter)
     spotPriceAfter =
       spotPriceAfter.length > 0
         ? spotPriceAfter[0].args.newSpotPrice
         : await this.getSpotPrice();
 
-    // let tx = await this.sudo.getTransaction(i.transactionHash);
     let b = await this.sudo.getBlock(i.blockNumber);
     let buyer = "";
     let nfts = intransfers
@@ -183,12 +181,6 @@ Pool.prototype.getTradesIn = async function () {
       spotPriceBefore,
       nfts.length
     );
-    /*console.log("SELL")
-     console.log(i.transactionHash)
-     console.log("INPUT", curveSimulation.outputValue.toString(), nfts.length,);*/
-
-    //console.log("======== TX")
-    //console.log(curveSimulation)
     let t = {
       type: "NFT_IN_POOL",
       transactionHash: i.transactionHash,
@@ -271,7 +263,6 @@ Pool.prototype.getTradesOut = async function () {
       .map(function (t) {
         return t.args.tokenId.toString();
       });
-    //console.log("CURVE PARAMS:::: ", curveType, ethers.utils.formatEther(fee), ethers.utils.formatEther(delta), ethers.utils.formatEther(spotPriceBefore), nfts.length)
     let curveSimulation = await this.sudo.utils.getBuyInfo(
       curveType,
       fee,
@@ -279,15 +270,6 @@ Pool.prototype.getTradesOut = async function () {
       spotPriceBefore,
       nfts.length
     );
-    /* console.log("BUY")
-     console.log(i.transactionHash)
-    console.log("VOLUME", volume.toString())
-     console.log("FEE ", lpFees.toString())
-     console.log("======== TX")
-     console.log("BEFORE", ethers.utils.formatEther(spotPriceBefore))
-     console.log("AFTER", ethers.utils.formatEther(spotPriceAfter), ethers.utils.formatEther(curveSimulation.newSpotPrice))
-     console.log("INPUT", ethers.utils.formatEther(curveSimulation.inputValue), nfts.length,);
-    console.log("PROTOCOL FEE", curveSimulation.protocolFee.toString()) */
     let t = {
       type: "NFT_OUT_POOL",
       transactionHash: i.transactionHash,
@@ -305,7 +287,7 @@ Pool.prototype.getTradesOut = async function () {
       pool: this.address,
       logIndex: i.logIndex,
     };
-     console.log(t)
+    // console.log(t)
     trades.push(t);
   }
   return trades;
