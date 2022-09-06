@@ -257,11 +257,44 @@ Pool.prototype.getTradesOut = async function () {
   let spotfilter = this.contract.filters.SpotPriceUpdate();
   let spotPrices = await this.contract.queryFilter(spotfilter);
 
+  let deltaUpdateFilter = this.contract.filters.DeltaUpdate();
+  let deltaUpdates = await this.contract.queryFilter(deltaUpdateFilter);
+
+  let feeUpdateFilter = this.contract.filters.FeeUpdate();
+  let feeUpdates = await this.contract.queryFilter(feeUpdateFilter);
+
   let nft = await this.getNFTContract();
   let intransfersfilter = nft.filters.Transfer(this.address, null);
   let intransfers = await nft.queryFilter(intransfersfilter);
 
   for (const i of outevents) {
+
+    let currentDelta = deltaUpdates.filter(function (u) {
+      return (
+        u.blockNumber <= i.blockNumber || 
+        u.blockNumber <= i.blockNumber && u.logIndex < i.logIndex
+      )
+    })
+    if (currentDelta.length > 0) {
+      console.log("#### FOUND DELTA UPDATE")
+      currentDelta = currentDelta[currentDelta.length - 1];
+    } else {
+      currentDelta = delta;
+    }
+
+    let currentFee = feeUpdates.filter(function (f) {
+      return (
+        f.blockNumber <= i.blockNumber || 
+        f.blockNumber <= i.blockNumber && f.logIndex < i.logIndex
+      )
+    })
+    if (currentFee.length > 0) {
+      console.log("#### FOUND FEE UPDATE")
+      currentFee = currentFee[currentFee.length - 1];
+    } else {
+      currentFee = fee;
+    }
+
     // We get the spot price before the swapIn event
     let spotPriceBefore = spotPrices.filter(function (p) {
       return (
@@ -300,8 +333,8 @@ Pool.prototype.getTradesOut = async function () {
       });
     let curveSimulation = await this.sudo.utils.getBuyInfo(
       curveType,
-      fee,
-      delta,
+      currentFee,
+      currentDelta,
       spotPriceBefore,
       nfts.length
     );
@@ -312,6 +345,8 @@ Pool.prototype.getTradesOut = async function () {
       nfts: nfts,
       nbNfts: nfts.length,
       buyer: buyer,
+      fee: currentFee.toString(),
+      delta: delta.toString(),
       lpFee: curveSimulation.lpFee.toString(),
       protocolFee: curveSimulation.protocolFee.toString(),
       inputValue: curveSimulation.inputValue.toString(),
