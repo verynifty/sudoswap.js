@@ -154,8 +154,7 @@ Pool.prototype.getTradesIn = async function () {
       )
     })
     if (currentDelta.length > 0) {
-      console.log("#### FOUND DELTA UPDATE")
-      currentDelta = currentDelta[currentDelta.length - 1];
+      currentDelta = currentDelta[currentDelta.length - 1].args[0];
     } else {
       currentDelta = delta;
     }
@@ -167,8 +166,7 @@ Pool.prototype.getTradesIn = async function () {
       )
     })
     if (currentFee.length > 0) {
-      console.log("#### FOUND FEE UPDATE")
-      currentFee = currentFee[currentFee.length - 1];
+      currentFee = currentFee[currentFee.length - 1].args[0];
     } else {
       currentFee = fee;
     }
@@ -276,8 +274,7 @@ Pool.prototype.getTradesOut = async function () {
       )
     })
     if (currentDelta.length > 0) {
-      console.log("#### FOUND DELTA UPDATE")
-      currentDelta = currentDelta[currentDelta.length - 1];
+      currentDelta = currentDelta[currentDelta.length - 1].args[0];
     } else {
       currentDelta = delta;
     }
@@ -289,8 +286,7 @@ Pool.prototype.getTradesOut = async function () {
       )
     })
     if (currentFee.length > 0) {
-      console.log("#### FOUND FEE UPDATE")
-      currentFee = currentFee[currentFee.length - 1];
+      currentFee = currentFee[currentFee.length - 1].args[0];
     } else {
       currentFee = fee;
     }

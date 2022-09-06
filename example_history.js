@@ -15,7 +15,7 @@ const { ethers } = require("ethers");
 
     let utils = sudo.utils;
 
-    const pool = sudo.getPool("0x5caf332dca4e6c9e69d52f320c21e74845353db0"); //initiate random pool based on chain id
+    const pool = sudo.getPool("0x451018623f2ea29a625ac5e051720eeac2b0e765"); //initiate random pool based on chain id
 
     console.log(await pool.getCurve());
     let trades = await pool.getTrades();
