@@ -63,31 +63,43 @@ Returns an array containing all past trades from the pool:
 
 ```javascript
 [
-    {
-    type: 'NFT_OUT_POOL',
-    transactionHash: '0x60272ce4cd5e782929466eae3c473a36738255671c27a2b83cf5d2fa2d00d4fb',
-    blockNumber: 15423334,
-    nfts: [ '437', '291' ],
-    nbNfts: 2,
-    buyer: '0xE0982E0d39eeE312017c58DBa76c99Ca59b8A958',
-    priceBefore: '40128478439841997',
-    priceAfter: '48555458912208816',
-    timestamp: 1661627205,
-    pool: '0x6210e6229aec95d17f57dab93e042013d7d3603c',
-    logIndex: 387
-  },
-  {
-    type: 'NFT_IN_POOL',
-    transactionHash: '0x66ca9107497fae4cebb1738a168bd83d305c5101c8adb8294783615472aa2738',
-    blockNumber: 15424791,
-    nfts: [ '1318', '1564' ],
-    nbNfts: 2,
-    buyer: '0x6210e6229AEc95d17f57DAB93e042013d7D3603C',
-    priceBefore: '48555458912208816',
-    priceAfter: '40128478439841996',
-    timestamp: 1661647692,
-    pool: '0x6210e6229aec95d17f57dab93e042013d7d3603c'
-  },...
+ {
+  type: 'NFT_OUT_POOL',
+  transactionHash: '0x843a0612826b6820383fd8b5b08e97c8645221ee8f9622bcf3ea9ed7c1bfebc1',
+  blockNumber: 15391750,
+  nfts: [ '4024' ],
+  nbNfts: 1,
+  buyer: '0x095aca033F31708Bf2542F15f7C5AEAFFA9B8e0b',
+  fee: '30000000000000000',
+  delta: '1100000000000000000',
+  lpFee: '103321068658202847',
+  protocolFee: '17220178109700474',
+  inputValue: '3564576868707998237',
+  pricePerNft: '3564576868707998237',
+  priceBefore: '3130941474490995379',
+  priceAfter: '3571014492753623300',
+  timestamp: 1661191376,
+  pool: '0x451018623f2ea29a625ac5e051720eeac2b0e765',
+  logIndex: 130
+ },
+ {
+  type: 'NFT_IN_POOL',
+  transactionHash: '0xabd28282f9f3b3b074e57c0a7fbb0adbf67def90b3dddba43cd088aef957fe65',
+  blockNumber: 15391959,
+  nfts: [ '7309' ],
+  nbNfts: 1,
+  buyer: '0x451018623F2EA29A625Ac5e051720eEAc2b0E765',
+  fee: '30000000000000000',
+  delta: '1030000000000000000',
+  lpFee: '117843478260869568',
+  protocolFee: '19640579710144928',
+  outputValue: '3790631884057971129',
+  pricePerNft: '3790631884057971129',
+  priceBefore: '3928115942028985625',
+  priceAfter: '3571014492753623291',
+  timestamp: 1661194031,
+  pool: '0x451018623f2ea29a625ac5e051720eeac2b0e765'
+ }
 ]
 ```
 
