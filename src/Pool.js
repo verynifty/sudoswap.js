@@ -58,21 +58,23 @@ Pool.prototype.getAllHeldIds = async function () {
   return heldIds.map((i) => i.toString());
 };
 
-Pool.prototype.getSpotPrice = async function () {
-  let spotPrice = await this.contract.spotPrice();
+Pool.prototype.getSpotPrice = async function (blockNumber = "latest") {
+  let spotPrice = await this.contract.spotPrice({ blockTag: blockNumber });
   return spotPrice;
 };
 
-Pool.prototype.getFee = async function () {
-  if (this.fee != null) {
+Pool.prototype.getFee = async function (blockNumber = "latest") {
+  /*
+  if (this.fee != null ) {
     return this.fee;
   }
-  this.fee = await this.contract.fee();
+  */
+  this.fee = await this.contract.fee({ blockTag: blockNumber });
   return this.fee;
 };
 
-Pool.prototype.getDelta = async function () {
-  return await this.contract.delta();
+Pool.prototype.getDelta = async function (blockNumber = "latest") {
+  return await this.contract.delta({ blockTag: blockNumber });
 };
 
 Pool.prototype.getAssetRecipient = async function () {
@@ -120,26 +122,61 @@ Pool.prototype.getBuyNFTQuote = async function (nbNFT) {
 Pool.prototype.getTradesIn = async function () {
   let trades = [];
 
-  let fee = "0";
-  let type = await this.getType();
-  if (type == "TRADE") {
-    fee = await this.getFee();
-  }
-
   let curveType = await this.getCurve();
-  let delta = await this.getDelta();
 
   let infilter = this.contract.filters.SwapNFTInPair();
   let inevents = await this.contract.queryFilter(infilter);
 
+  if (inevents.length == 0) {
+    return [];
+  }
+
   let spotfilter = this.contract.filters.SpotPriceUpdate();
   let spotPrices = await this.contract.queryFilter(spotfilter);
+
+  let deltaUpdateFilter = this.contract.filters.DeltaUpdate();
+  let deltaUpdates = await this.contract.queryFilter(deltaUpdateFilter);
+
+  let feeUpdateFilter = this.contract.filters.FeeUpdate();
+  let feeUpdates = await this.contract.queryFilter(feeUpdateFilter);
 
   let nft = await this.getNFTContract();
   let intransfersfilter = nft.filters.Transfer(null, this.address);
   let intransfers = await nft.queryFilter(intransfersfilter);
 
+  let fee = "0";
+  let type = await this.getType();
+  if (type == "TRADE") {
+    fee = await this.getFee(feeUpdates.length > 0 ? inevents[0].blockNumber : "latest");
+  }
+  let delta = await this.getDelta(deltaUpdates.length > 0 ? inevents.blockNumber : "latest");
+
   for (const i of inevents) {
+
+    let currentDelta = deltaUpdates.filter(function (u) {
+      return (
+        u.blockNumber <= i.blockNumber ||
+        u.blockNumber <= i.blockNumber && u.logIndex < i.logIndex
+      )
+    })
+    if (currentDelta.length > 0) {
+      currentDelta = currentDelta[currentDelta.length - 1].args[0];
+    } else {
+      currentDelta = delta;
+    }
+
+    let currentFee = feeUpdates.filter(function (f) {
+      return (
+        f.blockNumber <= i.blockNumber ||
+        f.blockNumber <= i.blockNumber && f.logIndex < i.logIndex
+      )
+    })
+    if (currentFee.length > 0) {
+      currentFee = currentFee[currentFee.length - 1].args[0];
+    } else {
+      currentFee = fee;
+    }
+
     // We get the spot price before the swapIn event
     let spotPriceBefore = spotPrices.filter(function (p) {
       return (
@@ -151,19 +188,17 @@ Pool.prototype.getTradesIn = async function () {
     spotPriceBefore =
       spotPriceBefore.length > 0
         ? spotPriceBefore[spotPriceBefore.length - 1].args.newSpotPrice
-        : await this.getSpotPrice();
+        : await this.getSpotPrice(i.blockNumber - 1);
 
     // we get the spot Price after the swapIn event
     let spotPriceAfter = spotPrices.filter(function (p) {
       return p.transactionHash == i.transactionHash && p.logIndex < i.logIndex;
     });
-    //console.log("price after == ", spotPriceAfter)
     spotPriceAfter =
       spotPriceAfter.length > 0
         ? spotPriceAfter[0].args.newSpotPrice
-        : await this.getSpotPrice();
+        : await this.getSpotPrice(i.blockNumber);
 
-    // let tx = await this.sudo.getTransaction(i.transactionHash);
     let b = await this.sudo.getBlock(i.blockNumber);
     let buyer = "";
     let nfts = intransfers
@@ -178,16 +213,11 @@ Pool.prototype.getTradesIn = async function () {
       });
     let curveSimulation = await this.sudo.utils.getSellInfo(
       curveType,
-      fee,
-      delta,
+      currentFee,
+      currentDelta,
       spotPriceBefore,
       nfts.length
     );
-    /*console.log("SELL")
-     console.log(i.transactionHash)
-     console.log("INPUT", curveSimulation.outputValue.toString(), nfts.length,);*/
-
-    //console.log("======== TX")
     let t = {
       type: "NFT_IN_POOL",
       transactionHash: i.transactionHash,
@@ -195,12 +225,18 @@ Pool.prototype.getTradesIn = async function () {
       nfts: nfts,
       nbNfts: nfts.length,
       buyer: buyer,
+      fee: currentFee.toString(),
+      delta: currentDelta.toString(),
+      lpFee: curveSimulation.lpFee.toString(),
+      protocolFee: curveSimulation.protocolFee.toString(),
+      outputValue: curveSimulation.outputValue.toString(),
+      pricePerNft: curveSimulation.outputValue.div(nfts.length).toString(),
       priceBefore: spotPriceBefore.toString(),
       priceAfter: spotPriceAfter.toString(),
       timestamp: b.timestamp,
       pool: this.address,
     };
-    //console.log(t)
+    // console.log(t)
     trades.push(t);
   }
   return trades;
@@ -208,28 +244,63 @@ Pool.prototype.getTradesIn = async function () {
 };
 
 Pool.prototype.getTradesOut = async function () {
-  let fee = "0";
-  let type = await this.getType();
-  if (type == "TRADE") {
-    fee = await this.getFee();
-  }
-
   let trades = [];
 
   let curveType = await this.getCurve();
-  let delta = await this.getDelta();
 
   let outfilter = this.contract.filters.SwapNFTOutPair();
   let outevents = await this.contract.queryFilter(outfilter);
 
+  if (outevents.length == 0) {
+    return [];
+  }
+
   let spotfilter = this.contract.filters.SpotPriceUpdate();
   let spotPrices = await this.contract.queryFilter(spotfilter);
+
+  let deltaUpdateFilter = this.contract.filters.DeltaUpdate();
+  let deltaUpdates = await this.contract.queryFilter(deltaUpdateFilter);
+
+  let feeUpdateFilter = this.contract.filters.FeeUpdate();
+  let feeUpdates = await this.contract.queryFilter(feeUpdateFilter);
 
   let nft = await this.getNFTContract();
   let intransfersfilter = nft.filters.Transfer(this.address, null);
   let intransfers = await nft.queryFilter(intransfersfilter);
 
+  let fee = "0";
+  let type = await this.getType();
+  if (type == "TRADE") {
+    fee = await this.getFee(feeUpdates.length > 0 ? outevents[0].blockNumber : "latest");
+  }
+  let delta = await this.getDelta(deltaUpdates.length > 0 ? outevents[0].blockNumber : "latest");
+
   for (const i of outevents) {
+
+    let currentDelta = deltaUpdates.filter(function (u) {
+      return (
+        u.blockNumber <= i.blockNumber ||
+        u.blockNumber <= i.blockNumber && u.logIndex < i.logIndex
+      )
+    })
+    if (currentDelta.length > 0) {
+      currentDelta = currentDelta[currentDelta.length - 1].args[0];
+    } else {
+      currentDelta = delta;
+    }
+
+    let currentFee = feeUpdates.filter(function (f) {
+      return (
+        f.blockNumber <= i.blockNumber ||
+        f.blockNumber <= i.blockNumber && f.logIndex < i.logIndex
+      )
+    })
+    if (currentFee.length > 0) {
+      currentFee = currentFee[currentFee.length - 1].args[0];
+    } else {
+      currentFee = fee;
+    }
+
     // We get the spot price before the swapIn event
     let spotPriceBefore = spotPrices.filter(function (p) {
       return (
@@ -241,7 +312,7 @@ Pool.prototype.getTradesOut = async function () {
     spotPriceBefore =
       spotPriceBefore.length > 0
         ? spotPriceBefore[spotPriceBefore.length - 1].args.newSpotPrice
-        : await this.getSpotPrice();
+        : await this.getSpotPrice(i.blockNumber - 1);
 
     // we get the spot Price after the swapIn event
     let spotPriceAfter = spotPrices.filter(function (p) {
@@ -251,7 +322,7 @@ Pool.prototype.getTradesOut = async function () {
     spotPriceAfter =
       spotPriceAfter.length > 0
         ? spotPriceAfter[0].args.newSpotPrice
-        : await this.getSpotPrice();
+        : await this.getSpotPrice(i.blockNumber);
 
     // let tx = await this.sudo.getTransaction(i.transactionHash);
     let b = await this.sudo.getBlock(i.blockNumber);
@@ -266,23 +337,13 @@ Pool.prototype.getTradesOut = async function () {
       .map(function (t) {
         return t.args.tokenId.toString();
       });
-    //console.log("CURVE PARAMS:::: ", curveType, ethers.utils.formatEther(fee), ethers.utils.formatEther(delta), ethers.utils.formatEther(spotPriceBefore), nfts.length)
     let curveSimulation = await this.sudo.utils.getBuyInfo(
       curveType,
-      fee,
-      delta,
+      currentFee,
+      currentDelta,
       spotPriceBefore,
       nfts.length
     );
-    /* console.log("BUY")
-     console.log(i.transactionHash)
-    console.log("VOLUME", volume.toString())
-     console.log("FEE ", lpFees.toString())
-     console.log("======== TX")
-     console.log("BEFORE", ethers.utils.formatEther(spotPriceBefore))
-     console.log("AFTER", ethers.utils.formatEther(spotPriceAfter), ethers.utils.formatEther(curveSimulation.newSpotPrice))
-     console.log("INPUT", ethers.utils.formatEther(curveSimulation.inputValue), nfts.length,);
-    console.log("PROTOCOL FEE", curveSimulation.protocolFee.toString()) */
     let t = {
       type: "NFT_OUT_POOL",
       transactionHash: i.transactionHash,
@@ -290,6 +351,12 @@ Pool.prototype.getTradesOut = async function () {
       nfts: nfts,
       nbNfts: nfts.length,
       buyer: buyer,
+      fee: currentFee.toString(),
+      delta: currentDelta.toString(),
+      lpFee: curveSimulation.lpFee.toString(),
+      protocolFee: curveSimulation.protocolFee.toString(),
+      inputValue: curveSimulation.inputValue.toString(),
+      pricePerNft: curveSimulation.inputValue.div(nfts.length).toString(),
       priceBefore: spotPriceBefore.toString(),
       priceAfter: spotPriceAfter.toString(),
       timestamp: b.timestamp,
@@ -300,7 +367,6 @@ Pool.prototype.getTradesOut = async function () {
     trades.push(t);
   }
   return trades;
-  //console.log(outtransfers)
 };
 
 Pool.prototype.getTrades = async function () {
