@@ -7,6 +7,11 @@ const ADDRESSES = {
     4: "0xcB1514FE29db064fa595628E0BFFD10cdf998F33", // rinkeby
   };
 
+  const DEPLOYED_BLOCK = {
+      1: 14645816,
+      4: 10484872
+  }
+
   function Factory(sudo, chainId = 1) {
     this.sudo = sudo;
     this.address = ADDRESSES[chainId];
@@ -20,7 +25,7 @@ const ADDRESSES = {
 
   Factory.prototype.getAllPairs = async function () {
     let newPairFilter = this.contract.filters.NewPair();
-    let pairCreations = await this.sudo.getAllEventsWithFilter(this.contract, newPairFilter);
+    let pairCreations = await this.sudo.getAllEventsWithFilter(this.contract, newPairFilter, DEPLOYED_BLOCK[this.chainId]);
     console.log(pairCreations);
 }
 

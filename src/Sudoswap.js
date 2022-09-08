@@ -120,7 +120,7 @@ Sudoswap.prototype.getAllEventsWithFilter = async function (contract, filter, fr
   } catch (error) {
     console.log("ERROR , ", fromBlock, toBlock, fromBlock < toBlock)
     let newToBlock = (toBlock == "latest") ? await this.provider.getBlockNumber() : toBlock;
-    const result = await Promise.all([this.getAllEventsWithFilter(contract, filter, fromBlock, parseInt((newToBlock - fromBlock) / 2)), this.getAllEventsWithFilter(contract, filter, parseInt((newToBlock - fromBlock) / 2) + 1, newToBlock)]);
+    const result = await Promise.all([this.getAllEventsWithFilter(contract, filter, fromBlock, fromBlock + parseInt((newToBlock - fromBlock) / 2)), this.getAllEventsWithFilter(contract, filter, fromBlock + parseInt((newToBlock - fromBlock) / 2) + 1, newToBlock)]);
     ret = [...result[0], ...result[1]];
   }
   return ret;
