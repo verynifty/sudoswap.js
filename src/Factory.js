@@ -23,13 +23,18 @@ Factory.prototype.createPair = async function () {
     // todo
 }
 
-Factory.prototype.getAllPairs = async function (fromBlock = -1, toBlock = "latest") {
+Factory.prototype.getNewPairsAddress = async function (fromBlock = -1, toBlock = "latest") {
     if (fromBlock == -1) {
         fromBlock = DEPLOYED_BLOCK[this.chainId];
     }
     let newPairFilter = this.contract.filters.NewPair();
     let pairCreations = await this.sudo.getAllEventsWithFilter(this.contract, newPairFilter, fromBlock, toBlock);
     return (pairCreations.map(e => e.args[0]))
+}
+
+Factory.prototype.getNewPairsInstance = async function (fromBlock = -1, toBlock = "latest") {
+    let pairs = await this.getNewPairsAddress(fromBlock, toBlock);
+    return (pairs.map(a => this.sudo.getPool(a)))
 }
 
 module.exports = Factory;
