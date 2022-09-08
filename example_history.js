@@ -18,7 +18,7 @@ const { ethers } = require("ethers");
     let utils = sudo.utils;
     let factory = await sudo.factory();
 
-    await factory.getAllPairs()
+    console.log(await factory.getAllPairs())
 
     return
 
