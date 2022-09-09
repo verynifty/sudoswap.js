@@ -16,6 +16,12 @@ const { ethers } = require("ethers");
     let archive = await sudo.hasNodeArchiveCapabilities()
     console.log(archive)
     let utils = sudo.utils;
+    let factory = await sudo.factory();
+
+    console.log(await factory.getNewPairsInstance())
+
+    return
+
 
     const pool = sudo.getPool("0x451018623f2ea29a625ac5e051720eeac2b0e765"); //initiate random pool based on chain id
 
@@ -25,7 +31,7 @@ const { ethers } = require("ethers");
 
     /*
 
-        const pool = sudo.getPool("0xb3041791fefe9284074713e4e14a6c4ddeeb57f9"); //initiate random pool based on chain id
+    const pool = sudo.getPool("0xb3041791fefe9284074713e4e14a6c4ddeeb57f9"); //initiate random pool based on chain id
 
     console.log(await pool.getCurve())
     let trades = await pool.getTradesOut();

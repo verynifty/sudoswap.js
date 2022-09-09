@@ -150,6 +150,20 @@ const isApprovedForRouter = await router.isApprovedForRouter(nftAddress)
 
 ```
 
+### Factory
+
+To create pools with the Factory you need to pass a private key when intializing sudoswap js.
+
+```javascript
+const factory = sudo.factory()
+
+factory.createPairETH( nft, bondingCurve, assetRecipient, poolType, delta, fee, spotPrice, initialNFTIds) // Create new pair
+factory.getNewPairsAddress()
+factory.getNewPairsInstance()
+factory.approveCollection()
+factory.isApprovedForFactory()
+
+```
 
 ### Utils
 
