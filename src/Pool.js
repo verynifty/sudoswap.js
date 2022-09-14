@@ -218,6 +218,7 @@ Pool.prototype.getTradesIn = async function () {
       spotPriceBefore,
       nfts.length
     );
+    console.log(curveSimulation.newSpotPrice.toString())
     let t = {
       type: "NFT_IN_POOL",
       transactionHash: i.transactionHash,
