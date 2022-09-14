@@ -171,7 +171,7 @@ exports.getSellInfo = function (curve, fee, delta, spotPrice, nbNfts) {
             FixedPointMathLib.WAD
         );
         */
-    newSpotPrice = spotPrice.mul(invDeltaPowN);
+    newSpotPrice = spotPrice.mul(invDeltaPowN).div(ETHER);
 
     /*
         newSpotPrice = uint128(

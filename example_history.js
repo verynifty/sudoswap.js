@@ -9,6 +9,16 @@ const { ethers } = require("ethers");
       `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY}`
     );
 
+
+
+
+    const pool = sudo.getPool("0xd2a6d0280ff48ccbcd654d5d0ecc45ef1e1cdbc3"); //initiate random pool based on chain id
+
+    console.log(await pool.getCurve());
+    let trades = await pool.getTrades();
+    console.log(trades);
+     return;
+     
     // =============================================================
     //                   GET POOL DATA
     // =============================================================
@@ -22,12 +32,6 @@ const { ethers } = require("ethers");
 
     return
 
-
-    const pool = sudo.getPool("0x451018623f2ea29a625ac5e051720eeac2b0e765"); //initiate random pool based on chain id
-
-    console.log(await pool.getCurve());
-    let trades = await pool.getTrades();
-    console.log(trades);
 
     /*
 
