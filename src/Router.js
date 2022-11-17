@@ -7,6 +7,7 @@ const abiDecoder = require("abi-decoder");
 const ADDRESSES = {
   1: "0x2b2e8cda09bba9660dca5cb6233787738ad68329", // mainnet
   4: "0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5", // rinkeby
+  5: "0x25b4EfC43c9dCAe134233CD577fFca7CfAd6748F", // goerli
 };
 function Router(sudo, chainId = 1) {
   this.sudo = sudo;

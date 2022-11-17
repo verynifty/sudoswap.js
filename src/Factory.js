@@ -5,11 +5,13 @@ const { ethers } = require("ethers");
 const ADDRESSES = {
   1: "0xb16c1342E617A5B6E4b631EB114483FDB289c0A4", // mainnet
   4: "0xcB1514FE29db064fa595628E0BFFD10cdf998F33", // rinkeby
+  5: "0xF0202E9267930aE942F0667dC6d805057328F6dC", // Goerli
 };
 
 const DEPLOYED_BLOCK = {
   1: 14645816,
   4: 10484872,
+  5: 7683515,
 };
 
 function Factory(sudo, chainId = 1) {
