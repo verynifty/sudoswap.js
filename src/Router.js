@@ -53,6 +53,29 @@ Router.prototype.swapETHForSpecificNFTs = async function (
   return tx;
 };
 
+/**
+        @notice Swaps ERC20 tokens into specific NFTs using multiple pairs.
+        @param swapList The list of pairs to trade with and the IDs of the NFTs to buy from each.
+        @param inputAmount The amount of ERC20 tokens to add to the ERC20-to-NFT swaps
+        @param nftRecipient The address that will receive the NFT output
+        @param deadline The Unix timestamp (in seconds) at/after which the swap will revert
+        @return remainingValue The unspent token amount
+     */
+Router.prototype.swapERC20ForSpecificNFTs = async function (
+  swapList,
+  inputAmount,
+  nftRecipient,
+  deadline
+) {
+  const signer = await this.sudo.getSigner();
+
+  const tx = await this.contract
+    .connect(signer)
+    .swapERC20ForSpecificNFTs(swapList, inputAmount, nftRecipient, deadline);
+
+  return tx;
+};
+
 Router.prototype.swapNFTsForToken = async function (
   swapList,
   minOutput,
@@ -138,7 +161,6 @@ Router.prototype.tokenApproveRouter = async function (erc20) {
 
   // check allowance
   let res = await ERC20Contract.connect(signer).approve(
-    this.sudo.connectedAddress,
     ADDRESSES[this.chainId],
     MAX_INT
   );
