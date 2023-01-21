@@ -1,5 +1,6 @@
 const ABI = require("./ABIS/pool.json");
 const NFTABI = require("./ABIS/erc721.json");
+const ERC20ABI = require("./ABIS/erc20.json");
 
 const { ethers } = require("ethers");
 const abiDecoder = require("abi-decoder");
@@ -147,18 +148,21 @@ Pool.prototype.getTradesIn = async function () {
   let fee = "0";
   let type = await this.getType();
   if (type == "TRADE") {
-    fee = await this.getFee(feeUpdates.length > 0 ? inevents[0].blockNumber : "latest");
+    fee = await this.getFee(
+      feeUpdates.length > 0 ? inevents[0].blockNumber : "latest"
+    );
   }
-  let delta = await this.getDelta(deltaUpdates.length > 0 ? inevents.blockNumber : "latest");
+  let delta = await this.getDelta(
+    deltaUpdates.length > 0 ? inevents.blockNumber : "latest"
+  );
 
   for (const i of inevents) {
-
     let currentDelta = deltaUpdates.filter(function (u) {
       return (
         u.blockNumber <= i.blockNumber ||
-        u.blockNumber <= i.blockNumber && u.logIndex < i.logIndex
-      )
-    })
+        (u.blockNumber <= i.blockNumber && u.logIndex < i.logIndex)
+      );
+    });
     if (currentDelta.length > 0) {
       currentDelta = currentDelta[currentDelta.length - 1].args[0];
     } else {
@@ -168,9 +172,9 @@ Pool.prototype.getTradesIn = async function () {
     let currentFee = feeUpdates.filter(function (f) {
       return (
         f.blockNumber <= i.blockNumber ||
-        f.blockNumber <= i.blockNumber && f.logIndex < i.logIndex
-      )
-    })
+        (f.blockNumber <= i.blockNumber && f.logIndex < i.logIndex)
+      );
+    });
     if (currentFee.length > 0) {
       currentFee = currentFee[currentFee.length - 1].args[0];
     } else {
@@ -271,18 +275,21 @@ Pool.prototype.getTradesOut = async function () {
   let fee = "0";
   let type = await this.getType();
   if (type == "TRADE") {
-    fee = await this.getFee(feeUpdates.length > 0 ? outevents[0].blockNumber : "latest");
+    fee = await this.getFee(
+      feeUpdates.length > 0 ? outevents[0].blockNumber : "latest"
+    );
   }
-  let delta = await this.getDelta(deltaUpdates.length > 0 ? outevents[0].blockNumber : "latest");
+  let delta = await this.getDelta(
+    deltaUpdates.length > 0 ? outevents[0].blockNumber : "latest"
+  );
 
   for (const i of outevents) {
-
     let currentDelta = deltaUpdates.filter(function (u) {
       return (
         u.blockNumber <= i.blockNumber ||
-        u.blockNumber <= i.blockNumber && u.logIndex < i.logIndex
-      )
-    })
+        (u.blockNumber <= i.blockNumber && u.logIndex < i.logIndex)
+      );
+    });
     if (currentDelta.length > 0) {
       currentDelta = currentDelta[currentDelta.length - 1].args[0];
     } else {
@@ -292,9 +299,9 @@ Pool.prototype.getTradesOut = async function () {
     let currentFee = feeUpdates.filter(function (f) {
       return (
         f.blockNumber <= i.blockNumber ||
-        f.blockNumber <= i.blockNumber && f.logIndex < i.logIndex
-      )
-    })
+        (f.blockNumber <= i.blockNumber && f.logIndex < i.logIndex)
+      );
+    });
     if (currentFee.length > 0) {
       currentFee = currentFee[currentFee.length - 1].args[0];
     } else {
@@ -380,4 +387,19 @@ Pool.prototype.getTrades = async function () {
   });
 };
 
+// returns an ERC20 instance if the pool is erc20 and NFTs
+Pool.prototype.getERC20Contract = async function () {
+  try {
+    let token = await this.contract.token();
+    if (token.length == 42) {
+      this.ERC20Contract = new ethers.Contract(
+        token,
+        ERC20ABI,
+        this.sudo.provider
+      );
+    } else {
+      return "This is an ETH pool";
+    }
+  } catch (error) {}
+};
 module.exports = Pool;

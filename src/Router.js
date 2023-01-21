@@ -1,5 +1,6 @@
 const ABI = require("./ABIS/router.json");
 const NFTABI = require("./ABIS/erc721.json");
+const NFTABI = require("./ABIS/erc20.json");
 
 const { ethers } = require("ethers");
 const abiDecoder = require("abi-decoder");
@@ -98,6 +99,49 @@ Router.prototype.isApprovedForRouter = async function (nftCollection) {
   );
   return res;
   console.log(res);
+};
+
+// FOR ERC20 TOKEN POOLS
+
+// returns allowance
+Router.prototype.tokenAllowanceForRouter = async function (erc20) {
+  let tokenContract = new ethers.Contract(erc20, ERC20ABI, this.sudo.provider);
+
+  const ERC20Contract = new ethers.Contract(
+    erc20,
+    ERC20ABI,
+    this.sudo.provider
+  );
+
+  // check allowance
+  let res = await ERC20Contract.allowance(
+    this.sudo.connectedAddress,
+    ADDRESSES[this.chainId]
+  );
+
+  return res;
+};
+
+Router.prototype.tokenApproveRouter = async function (erc20) {
+  MAX_INT =
+    "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+
+  let tokenContract = new ethers.Contract(erc20, ERC20ABI, this.sudo.provider);
+
+  const ERC20Contract = new ethers.Contract(
+    erc20,
+    ERC20ABI,
+    this.sudo.provider
+  );
+
+  // check allowance
+  let res = await ERC20Contract.approve(
+    this.sudo.connectedAddress,
+    ADDRESSES[this.chainId],
+    MAX_INT
+  );
+
+  return res;
 };
 
 module.exports = Router;
