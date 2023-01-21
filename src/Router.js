@@ -1,6 +1,6 @@
 const ABI = require("./ABIS/router.json");
 const NFTABI = require("./ABIS/erc721.json");
-const NFTABI = require("./ABIS/erc20.json");
+const ERC20ABI = require("./ABIS/erc20.json");
 
 const { ethers } = require("ethers");
 const abiDecoder = require("abi-decoder");
