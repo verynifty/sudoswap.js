@@ -134,8 +134,10 @@ Router.prototype.tokenApproveRouter = async function (erc20) {
     this.sudo.provider
   );
 
+  const signer = await this.sudo.getSigner();
+
   // check allowance
-  let res = await ERC20Contract.approve(
+  let res = await ERC20Contract.connect(signer).approve(
     this.sudo.connectedAddress,
     ADDRESSES[this.chainId],
     MAX_INT
