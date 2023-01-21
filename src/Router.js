@@ -123,7 +123,7 @@ Router.prototype.tokenAllowanceForRouter = async function (erc20) {
 };
 
 Router.prototype.tokenApproveRouter = async function (erc20) {
-  MAX_INT =
+  const MAX_INT =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
   let tokenContract = new ethers.Contract(erc20, ERC20ABI, this.sudo.provider);
